@@ -1,6 +1,6 @@
 [
   {
-    "key": "YOUR_MACHO_KEY_HERE",  // Replace with output of print(MachoAuthenticationKey())
+    "key": "4922905478335778842",  // Replace with output of print(MachoAuthenticationKey())
     "expires": "2026-12-31T23:59:59Z"
   },
   {
@@ -12,3 +12,4 @@
     "expires": "2025-10-31T23:59:59Z"
   }
 ]
+
