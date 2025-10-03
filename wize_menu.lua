@@ -1,96 +1,42 @@
 --wize* Wize on top!
 local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/main/wize.html"  -- Your hosted DUI HTML
-local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/main/wizekeys.json"  -- Your hosted keys JSON
+local keyListUrl = "https://wize-menu.onrender.com"  // Replace with your Render URL
 local KeysBin = MachoWebRequest(keyListUrl)
+print("URL: " .. keyListUrl)
+print("Raw JSON: " .. (KeysBin or "nil"))
+if not KeysBin or KeysBin:find("404") then
+  print("Failed to fetch wizekeys.json: Check URL or file availability")
+  return
+end
 local CurrentKey = MachoAuthenticationKey()
-
-local function isKeyValid()
-    if not KeysBin then
-        return false
-    end
-
-    local ok, keys = pcall(json.decode, KeysBin)
-    if not ok or not keys or type(keys) ~= "table" then
-        return false
-    end
-
-    local now = os.time()
-    for _, keyData in ipairs(keys) do
-        if keyData.key == CurrentKey then
-            if keyData.expires then
-                local year, month, day, hour, min, sec =
-                    string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                if year and month and day and hour and min and sec then
-                    local expiresTime =
-                        os.time(
-                        {
-                            year = tonumber(year),
-                            month = tonumber(month),
-                            day = tonumber(day),
-                            hour = tonumber(hour),
-                            min = tonumber(min),
-                            sec = tonumber(sec)
-                        }
-                    )
-                    if expiresTime > now then
-                        return true
-                    end
-                end
-            end
-        end
-    end
-
-    return false
+print("Current Key: " .. CurrentKey)
+local Keys, err = json.decode(KeysBin)
+if not Keys then
+  print("JSON parse error: " .. (err or "Unknown error") .. "\nRaw content: " .. KeysBin)
+  return
 end
-
-if not isKeyValid() then
-    MachoMenuNotification("Wize Menu", "Your key ain't valid lmfao: " .. CurrentKey, 10)
-    return
-end
-
-Citizen.CreateThread(
-    function()
-        local ok, keys = pcall(json.decode, KeysBin)
-        if ok and keys and type(keys) == "table" then
-            for _, keyData in ipairs(keys) do
-                if keyData.key == CurrentKey and keyData.expires then
-                    local year, month, day, hour, min, sec =
-                        string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                    if year and month and day and hour and min and sec then
-                        local now = os.time()
-                        local expiresTime =
-                            os.time(
-                            {
-                                year = tonumber(year),
-                                month = tonumber(month),
-                                day = tonumber(day),
-                                hour = tonumber(hour),
-                                min = tonumber(min),
-                                sec = tonumber(sec)
-                            }
-                        )
-                        local remainingSeconds = expiresTime - now
-                        local remainingDays = math.floor(remainingSeconds / 86400)
-                        local remainingHours = math.floor((remainingSeconds % 86400) / 3600)
-
-                        local expirationMessage
-                        if remainingDays > 0 then
-                            expirationMessage =
-                                string.format(
-                                "You have %d days and %d hours left. Enjoy!",
-                                remainingDays,
-                                remainingHours
-                            )
-                        else
-                            expirationMessage = string.format("You have %d hours left. Enjoy!", remainingHours)
-                        end
-                        MachoMenuNotification("Wize Menu", expirationMessage, 5)
-                    end
-                    break
-                end
-            end
-        end
+local IsValidKey = false
+for _, keyData in ipairs(Keys) do
+  print("Checking key: " .. keyData.key)
+  if keyData.key == CurrentKey then
+    if not keyData.expires or os.time(os.date("!*t")) < os.time(os.date("!*t", keyData.expires)) then
+      IsValidKey = true
+      if keyData.expires then
+        local remaining = os.time(os.date("!*t", keyData.expires)) - os.time(os.date("!*t"))
+        local days = math.floor(remaining / (24 * 3600))
+        MachoNotify("Key valid! Expires in " .. days .. " days")
+      else
+        MachoNotify("Key valid! No expiration")
+      end
     end
+    break
+  end
+end
+if not IsValidKey then
+  print("Your key ain't valid lmfao: " .. CurrentKey)
+  return
+end
+-- Rest of the script (DUI setup, MenuState, etc.) remains unchanged
 )
 
 local Dui = MachoCreateDui(DuiUrl)
@@ -3101,4 +3047,5 @@ Citizen.CreateThread(
     end
 
 )
+
 
