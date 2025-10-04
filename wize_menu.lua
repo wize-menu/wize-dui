@@ -409,7 +409,7 @@ end
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if IsControlJustPressed(0, 167) then -- F6 key
+        if IsControlJustPressed(0, 167) or IsControlJustPressed(0, 178) then -- F6 (167) or Delete (178)
             MenuOpen = not MenuOpen
             if MenuOpen then
                 state.tabs = {{key = "trigger_finder", foundTriggers = {}, selectedTrigger = nil, items = {}}}
