@@ -1,5 +1,5 @@
-local DuiUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wize.html"  -- Your hosted DUI HTML
-local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
+local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/refs/heads/main/wize.html"  -- Your hosted DUI HTML
+local keyListUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
 
@@ -474,3 +474,4 @@ end
 function GetResourceState(resourceName)
     return "started" -- Placeholder, replace with actual implementation
 end
+
