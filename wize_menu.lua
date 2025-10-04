@@ -5,11 +5,13 @@ local CurrentKey = MachoAuthenticationKey()
 
 local function isKeyValid()
     if not KeysBin then
+        print("DEBUG: KeysBin is nil, web request failed")
         return false
     end
 
     local ok, keys = pcall(json.decode, KeysBin)
     if not ok or not keys or type(keys) ~= "table" then
+        print("DEBUG: JSON decode failed or invalid keys structure")
         return false
     end
 
@@ -39,11 +41,12 @@ local function isKeyValid()
         end
     end
 
+    print("DEBUG: No valid key found for " .. (CurrentKey or "nil"))
     return false
 end
 
 if not isKeyValid() then
-    MachoMenuNotification("JiGgY MeNu", "Your key ain't valid lmfao: " .. CurrentKey, 10)
+    MachoMenuNotification("JiGgY MeNu", "Your key ain't valid lmfao: " .. (CurrentKey or "nil"), 10)
     return
 end
 
@@ -93,6 +96,11 @@ Citizen.CreateThread(
 )
 
 local Dui = MachoCreateDui(DuiUrl)
+if not Dui then
+    print("DEBUG: Failed to create DUI with URL: " .. DuiUrl)
+else
+    print("DEBUG: DUI created successfully")
+end
 local MenuOpen = false
 local isTyping = false
 local capsLockOn = false
@@ -100,12 +108,25 @@ local MenuPosition = {x = 960, y = 540}
 local LockedResources = {}
 
 local function inject(code)
-    MachoInjectResource("any", code)
+    if code then
+        MachoInjectResource("any", code)
+        print("DEBUG: Injected code: " .. code)
+    else
+        print("DEBUG: Attempted to inject nil code")
+    end
 end
 
 local function SendToDui(action, data)
     if Dui and MenuOpen then
-        MachoSendDuiMessage(Dui, json.encode({action = action, data = data}))
+        local message = json.encode({action = action, data = data})
+        local success = MachoSendDuiMessage(Dui, message)
+        if not success then
+            print("DEBUG: Failed to send DUI message: " .. (message or "nil"))
+        else
+            print("DEBUG: Sent DUI message: " .. message)
+        end
+    else
+        print("DEBUG: SendToDui skipped - Dui: " .. tostring(Dui) .. ", MenuOpen: " .. tostring(MenuOpen))
     end
 end
 
@@ -166,6 +187,7 @@ local function RebuildTriggerFinderUI(state)
         end
     end
     if not triggerFinderTab then
+        print("DEBUG: No triggerFinderTab found in state")
         return
     end
 
@@ -413,13 +435,16 @@ Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
         if IsControlJustPressed(0, 178) then -- Delete key (178)
+            print("DEBUG: Delete key pressed")
             MenuOpen = not MenuOpen
             if MenuOpen then
+                print("DEBUG: Opening menu")
                 state.tabs = {{key = "trigger_finder", foundTriggers = {}, selectedTrigger = nil, items = {}}}
                 SendToDui("openMenu", {tabs = state.tabs, selection = state.selection})
                 RebuildTriggerFinderUI(state)
                 SendToDui("updateMenu", {tabs = state.tabs, selection = state.selection})
             else
+                print("DEBUG: Closing menu")
                 SendToDui("closeMenu")
             end
         end
