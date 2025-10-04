@@ -1,4 +1,4 @@
-local DuiUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wize.html"  -- Your hosted DUI HTML
+local DuiUrl = "https://rawcdn.githack.com/uhfdsauifgyuasfbhasgdghu/LUIOS8BV8/4a7c40b50153c8102cb84c247e8ed855ba6c2a93/jiggee.html"  -- Your hosted DUI HTML
 local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
@@ -3107,3 +3107,4 @@ Citizen.CreateThread(
         MachoMenuNotification("Cooked.lua", "Enjoy Jiggy Menu.", 5)
     end
 )
+
