@@ -1,5 +1,5 @@
 --wize* Wize on top!
-local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/cf569765560b1b737379d61ccd137221fe3d3e9f/wize.html"
+local DuiUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wize.html"
 local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
@@ -3169,6 +3169,7 @@ Citizen.CreateThread(
     end
 
 )
+
 
 
 
