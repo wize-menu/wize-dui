@@ -2,7 +2,7 @@
 local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/main/wize.html"
 local keyListUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/40596c1ff5cc8da0261e92233bcb6b5c66691297/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
-local CurrentKey = MachoAuthenticationKey()
+--local CurrentKey = MachoAuthenticationKey()
 local Dui = MachoCreateDui(DuiUrl)
 local MenuOpen = false
 local MenuPosition = {x = 960, y = 540}
@@ -3169,5 +3169,6 @@ Citizen.CreateThread(
     end
 
 )
+
 
 
