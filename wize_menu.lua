@@ -1,6 +1,6 @@
 --wize* Wize on top!
 local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/main/wize.html"  -- Your hosted DUI HTML
-local keyListUrl = "https://wize-menu.onrender.com"  // Replace with your Render URL
+local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 print("URL: " .. keyListUrl)
 print("Raw JSON: " .. (KeysBin or "nil"))
@@ -3047,5 +3047,6 @@ Citizen.CreateThread(
     end
 
 )
+
 
 
