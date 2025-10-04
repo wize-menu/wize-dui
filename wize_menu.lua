@@ -1,141 +1,8 @@
---wize* Wize on top!
+-- Wize Menu
 local DuiUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wize.html"
-local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
-local KeysBin = MachoWebRequest(keyListUrl)
-local CurrentKey = MachoAuthenticationKey()
 local Dui = MachoCreateDui(DuiUrl)
 local MenuOpen = false
 local MenuPosition = {x = 960, y = 540}
-local KeyCache = nil
-local CacheTimeout = 3600 -- Cache keys for 1 hour (in seconds)
-local CacheTimestamp = 0
-local MaxRetries = 3
-local RetryDelay = 1000 -- 1 second delay between retries
-
--- Authentication functions
-local function fetchKeys()
-    local attempts = 0
-    while attempts < MaxRetries do
-        local response = MachoWebRequest(keyListUrl)
-        if response then
-            local ok, keys = pcall(json.decode, response)
-            if ok and keys and type(keys) == "table" then
-                KeyCache = keys
-                CacheTimestamp = os.time()
-                return true
-            end
-        end
-        attempts = attempts + 1
-        Citizen.Wait(RetryDelay)
-    end
-    return false
-end
-
-local function isKeyValid()
-    if KeyCache and os.time() - CacheTimestamp < CacheTimeout then
-        for _, keyData in ipairs(KeyCache) do
-            if keyData.key == CurrentKey then
-                if keyData.expires then
-                    local year, month, day, hour, min, sec =
-                        string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                    if year and month and day and hour and min and sec then
-                        local expiresTime = os.time({
-                            year = tonumber(year),
-                            month = tonumber(month),
-                            day = tonumber(day),
-                            hour = tonumber(hour),
-                            min = tonumber(min),
-                            sec = tonumber(sec)
-                        })
-                        if expiresTime > os.time() then
-                            return true
-                        end
-                    end
-                end
-            end
-        end
-        return false
-    end
-
-    if not fetchKeys() then
-        MachoMenuNotification("Wize Menu", "Failed to fetch key list. Check your connection.", 10)
-        return false
-    end
-
-    for _, keyData in ipairs(KeyCache) do
-        if keyData.key == CurrentKey then
-            if keyData.expires then
-                local year, month, day, hour, min, sec =
-                    string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                if year and month and day and hour and min and sec then
-                    local expiresTime = os.time({
-                        year = tonumber(year),
-                        month = tonumber(month),
-                        day = tonumber(day),
-                        hour = tonumber(hour),
-                        min = tonumber(min),
-                        sec = tonumber(sec)
-                    })
-                    if expiresTime > os.time() then
-                        return true
-                    end
-                end
-            end
-        end
-    end
-    return false
-end
-
-local function showExpirationInfo()
-    if not KeyCache then
-        MachoMenuNotification("Wize Menu", "Key cache not initialized.", 5)
-        return
-    end
-    for _, keyData in ipairs(KeyCache) do
-        if keyData.key == CurrentKey and keyData.expires then
-            local year, month, day, hour, min, sec =
-                string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-            if year and month and day and hour and min and sec then
-                local now = os.time()
-                local expiresTime = os.time({
-                    year = tonumber(year),
-                    month = tonumber(month),
-                    day = tonumber(day),
-                    hour = tonumber(hour),
-                    min = tonumber(min),
-                    sec = tonumber(sec)
-                })
-                local remainingSeconds = expiresTime - now
-                if remainingSeconds <= 0 then
-                    MachoMenuNotification("Wize Menu", "Your key has expired: " .. CurrentKey, 10)
-                    return
-                end
-                local remainingDays = math.floor(remainingSeconds / 86400)
-                local remainingHours = math.floor((remainingSeconds % 86400) / 3600)
-                local expirationMessage
-                if remainingDays > 0 then
-                    expirationMessage = string.format(
-                        "Key valid. %d days, %d hours remaining.",
-                        remainingDays,
-                        remainingHours
-                    )
-                else
-                    expirationMessage = string.format(
-                        "Key valid. %d hours remaining.",
-                        remainingHours
-                    )
-                end
-                MachoMenuNotification("Wize Menu", expirationMessage, 5)
-            else
-                MachoMenuNotification("Wize Menu", "Invalid expiration format for key: " .. CurrentKey, 5)
-            end
-            return
-        end
-    end
-    MachoMenuNotification("Wize Menu", "Key not found: " .. CurrentKey, 5)
-end
-
--- Menu logic from original wize_menu.lua
 local isTyping = false
 local capsLockOn = false
 local LockedResources = {}
@@ -149,6 +16,7 @@ local showSelfSkeleton = false
 local crosshairEnabled = false
 local fovCircleEnabled = false
 
+-- Utility functions
 local function getClosestPlayerInView(maxDist)
     local camCoords = GetGameplayCamCoord()
     local camRot = GetGameplayCamRot(2)
@@ -213,33 +81,6 @@ local function SendToDui(action, data)
     end
 end
 
-local function toggleVehicleBoost()
-    isVehicleBoostEnabled = not isVehicleBoostEnabled
-    if isVehicleBoostEnabled then
-        MachoMenuNotification("Wize Menu", "Vehicle boost is ON fucking enjoy it.", 3)
-    else
-        MachoMenuNotification("Wize Menu", "Vehicle boost is now OFF.", 3)
-    end
-end
-
-local function toggleVehicleUnlocker()
-    isVehicleUnlockerActive = not isVehicleUnlockerActive
-    if isVehicleUnlockerActive then
-        MachoMenuNotification("Wize Menu", "Vehicle Unlocker Enabled. Press E on a vehicle.", 3)
-    else
-        MachoMenuNotification("Wize Menu", "Vehicle Unlocker Disabled.", 3)
-    end
-end
-
-local function inject(code)
-    MachoInjectResource("any", code)
-end
-local function SendToDui(action, data)
-    if Dui and MenuOpen then
-        MachoSendDuiMessage(Dui, json.encode({action = action, data = data}))
-    end
-end
-
 local giveItemState = {turn = 1, akIndex = 1}
 local specialCharMap = {
     [0xC0] = {normal = "`", shifted = "~"},
@@ -281,15 +122,16 @@ local function handleRobberyAttempt()
                 if #(GetEntityCoords(ped) - selfCoords) <= 2.5 then
                     ExecuteCommand("steal")
                     ExecuteCommand("rob")
-                    MachoMenuNotification("Wize Menu", "Robbing Nigga.", 3)
+                    MachoMenuNotification("Wize Menu", "Robbing player.", 3)
                     return
                 end
             end
         end
     end
-    MachoMenuNotification("Wize Menu", "Nigga Nobody Is Near You To Rob.", 3)
+    MachoMenuNotification("Wize Menu", "Nobody is near to rob.", 3)
 end
 
+-- Trigger Finder UI
 local function RebuildTriggerFinderUI(state)
     local triggerFinderTab
     local tabIdx
@@ -313,7 +155,7 @@ local function RebuildTriggerFinderUI(state)
                 type = "button",
                 label = #triggerFinderTab.foundTriggers > 0 and "Scan For Triggers Again" or "Scan For Triggers",
                 action = function(s)
-                    MachoMenuNotification("Wize Menu", "Finding Triggers Nigga.", 3)
+                    MachoMenuNotification("Wize Menu", "Scanning for triggers...", 3)
                     Citizen.Wait(250)
                     triggerFinderTab.foundTriggers = {}
                     local knownTriggers = {
@@ -391,7 +233,6 @@ local function RebuildTriggerFinderUI(state)
                             res = {"PalmBeachMiamiMinimap"},
                             all = true
                         },
-                        --testing shit
                         {
                             id = "cl_pizzeria",
                             name = "Any Item Trigger (Medium Risk)",
@@ -961,7 +802,13 @@ local function RebuildTriggerFinderUI(state)
                             res = {"rm_camperv"},
                             all = false
                         },
-                        {id = "ry_rent", name = "Money Trigger (Medium Risk)", type = "money", res = {"ry_rent"}, all = false},
+                        {
+                            id = "ry_rent",
+                            name = "Money Trigger (Medium Risk)",
+                            type = "money",
+                            res = {"ry_rent"},
+                            all = false
+                        },
                         {
                             id = "savana_trucker",
                             name = "Money Trigger (Medium Risk)",
@@ -1113,10 +960,11 @@ local function RebuildTriggerFinderUI(state)
                     end
                     MachoMenuNotification(
                         "Wize Menu",
-                        "There Is " .. #triggerFinderTab.foundTriggers .. " triggers in this mf.",
+                        "Found " .. #triggerFinderTab.foundTriggers .. " triggers.",
                         5
                     )
                     RebuildTriggerFinderUI(s)
+                    SendToDui('updateMenuState', s)
                 end
             }
         )
@@ -1129,6 +977,7 @@ local function RebuildTriggerFinderUI(state)
                     action = function(s)
                         triggerFinderTab.selectedTrigger = trigger
                         RebuildTriggerFinderUI(s)
+                        SendToDui('updateMenuState', s)
                     end
                 }
             )
@@ -1234,7 +1083,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "generic_money" then
                         inject(
-                            ("pcall(function() TriggerServerEvent('ak47_qb_drugmanagerv2:shop:buy', '53.15-1478.79', {['buyprice']=0, ['currency']='cash', ['name']='%s', ['sellprice']=0, ['label']='Wize Menu On Top Nigga'}, %d) end)"):format(
+                            ("pcall(function() TriggerServerEvent('ak47_qb_drugmanagerv2:shop:buy', '53.15-1478.79', {['buyprice']=0, ['currency']='cash', ['name']='%s', ['sellprice']=0, ['label']='Wize Menu'}, %d) end)"):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1249,14 +1098,14 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "ak47_inventory" then
                         inject(
-                            ([[TriggerServerEvent('ak47_inventory:buyItemDrag',{fromInv={identifier=nil,slot=1,slotData={amount=%d,close=true,count=999999999999999,description="CodePlug Found Ts Lol",info={account="cash",buyPrice=0},label="CodePlug Too Good Lol",name="%s",quality=100,slot=1,type="item",weight=0}},toInv={identifier=nil,slot=1,slotData={slot=1}}} )]]):format(
+                            ([[TriggerServerEvent('ak47_inventory:buyItemDrag',{fromInv={identifier=nil,slot=1,slotData={amount=%d,close=true,count=999999999999999,description="Wize Menu Item",info={account="cash",buyPrice=0},label="Wize Menu Item",name="%s",quality=100,slot=1,type="item",weight=0}},toInv={identifier=nil,slot=1,slotData={slot=1}}} )]]):format(
                                 amountInput,
                                 itemInput
                             )
                         )
                         handled = true
                     elseif trigger.id == "shop_purchase" then
-                        local randomId = "codeplug" .. math.random(1000, 99999)
+                        local randomId = "wize" .. math.random(1000, 99999)
                         inject(
                             ('pcall(function() TriggerServerEvent("shop:purchaseItem2", "%s", "%s", 0) end)'):format(
                                 randomId,
@@ -1298,7 +1147,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "adminplus_selldrugs" then
                         inject(
-                            ('pcall(function() TriggerEvent("stasiek_selldrugsv2:findClient",{ ["i"] = 8, ["label"] = "CodePlugFuckedUrCity", ["type"] = "CodePlugFuckedUrCity", ["zone"] = "The Meat Quarter", ["price"] = %d, ["count"] = 0 }) end)'):format(
+                            ('pcall(function() TriggerEvent("stasiek_selldrugsv2:findClient",{ ["i"] = 8, ["label"] = "WizeMenu", ["type"] = "WizeMenu", ["zone"] = "The Meat Quarter", ["price"] = %d, ["count"] = 0 }) end)'):format(
                                 amountInput
                             )
                         )
@@ -1314,7 +1163,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "ak47_drugmanagerv2" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("ak47_drugmanagerv2:shop:buy", "-1146.444941.22", { buyprice = 0, currency = "money", label = "codeplug", name = "%s", sellprice = 69696969 }, %d ) end)'):format(
+                            ('pcall(function() TriggerServerEvent("ak47_drugmanagerv2:shop:buy", "-1146.444941.22", { buyprice = 0, currency = "money", label = "wize", name = "%s", sellprice = 69696969 }, %d ) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1405,7 +1254,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "ars_vvsguns" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("ars_vvsguns:Buyitem", "vvsguns", { items = { { id = "%s", image = "codeplug", name = "codeplug", page = 2, price = 0, quantity = %d, stock = 9999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash" ) end)'):format(
+                            ('pcall(function() TriggerServerEvent("ars_vvsguns:Buyitem", "vvsguns", { items = { { id = "%s", image = "wize", name = "wize", page = 2, price = 0, quantity = %d, stock = 9999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash" ) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1413,7 +1262,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "ars_vvsjewelry" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("ars_vvsjewelry:Buyitem", "vvsjewelry", { items = { { id = "%s", image = "CodePlug", name = "CodePlugRunsUrCity", page = 2, price = 0, quantity = %d, stock = 999999999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash" ) end)'):format(
+                            ('pcall(function() TriggerServerEvent("ars_vvsjewelry:Buyitem", "vvsjewelry", { items = { { id = "%s", image = "WizeMenu", name = "WizeMenu", page = 2, price = 0, quantity = %d, stock = 999999999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash" ) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1421,7 +1270,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "ars_whitewidow" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("ars_whitewidow_v2:Buyitem", { items = { { id = "%s", image = "CodeFinder", name = "CodeFinder", page = 1, price = 500, quantity = %d, stock = 999999999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash") end)'):format(
+                            ('pcall(function() TriggerServerEvent("ars_whitewidow_v2:Buyitem", { items = { { id = "%s", image = "WizeFinder", name = "WizeFinder", page = 1, price = 500, quantity = %d, stock = 999999999999999, totalPrice = 0 } }, method = "cash", total = 0 }, "cash") end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1471,7 +1320,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "brutal_hunting" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("brutal_hunting:server:AddItem", { { amount = %d, item = "%s", label = "CodePlugRunsYou", price = 0 } }) end)'):format(
+                            ('pcall(function() TriggerServerEvent("brutal_hunting:server:AddItem", { { amount = %d, item = "%s", label = "WizeMenu", price = 0 } }) end)'):format(
                                 amountInput,
                                 itemInput
                             )
@@ -1546,7 +1395,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "dusa_pet_shop" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("__ox_cb_dusa_pets:cb:canBuyItem", "dusa_pet", "dusa_pets:cb:canBuyItem", { ["data"] = { [1] = { ["name"] = "CodePlugRunsU", ["img"] = "bed2.png", ["detail"] = "A nice sleep place for your pet", ["item"] = "%s", ["count"] = %d, ["totalPrice"] = 0, ["price"] = 0, }, }, ["account"] = "cash", }) end)'):format(
+                            ('pcall(function() TriggerServerEvent("__ox_cb_dusa_pets:cb:canBuyItem", "dusa_pet", "dusa_pets:cb:canBuyItem", { ["data"] = { [1] = { ["name"] = "WizeMenu", ["img"] = "bed2.png", ["detail"] = "Wize pet item", ["item"] = "%s", ["count"] = %d, ["totalPrice"] = 0, ["price"] = 0, }, }, ["account"] = "cash", }) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1577,7 +1426,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "fivecode_camping" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("fivecode_camping:callCallback", "fivecode_camping:shopPay", 0, { ["price"] = 0, ["item"] = "%s", ["amount"] = %d, ["label"] = "CODEPLUG RUNS U" }, { ["args"] = { ["payment"] = { ["bank"] = true, ["cash"] = true } }, ["entity"] = 9218, ["distance"] = 0.64, ["hide"] = false, ["type"] = "bank", ["label"] = "Open Shop", ["coords"] = "vector3(-773.2181, 5597.66, 33.97217)", ["name"] = "npcShop" }) end)'):format(
+                            ('pcall(function() TriggerServerEvent("fivecode_camping:callCallback", "fivecode_camping:shopPay", 0, { ["price"] = 0, ["item"] = "%s", ["amount"] = %d, ["label"] = "WizeMenu"} , { ["args"] = { ["payment"] = { ["bank"] = true, ["cash"] = true } }, ["entity"] = 9218, ["distance"] = 0.64, ["hide"] = false, ["type"] = "bank", ["label"] = "Open Shop", ["coords"] = "vector3(-773.2181, 5597.66, 33.97217)", ["name"] = "npcShop" }) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1608,7 +1457,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "fuksus_shops" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("__ox_cb_fuksus-shops:buyItems", "fuksus-shops", "fuksus-shops:buyItems", { ["payment"] = "bank", ["items"] = { [1] = { ["amount"] = %d, ["label"] = "CodePlugOnTop", ["price"] = 0, ["name"] = "%s", }, }, }) end)'):format(
+                            ('pcall(function() TriggerServerEvent("__ox_cb_fuksus-shops:buyItems", "fuksus-shops", "fuksus-shops:buyItems", { ["payment"] = "bank", ["items"] = { [1] = { ["amount"] = %d, ["label"] = "WizeMenu", ["price"] = 0, ["name"] = "%s", }, }, }) end)'):format(
                                 amountInput,
                                 itemInput
                             )
@@ -1784,7 +1633,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "mt_printers" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("__ox_cb_mt_printers:server:itemActions", "mt_printers", "mt_printers:server:itemActions:codeplug", "%s", "add") end)'):format(
+                            ('pcall(function() TriggerServerEvent("__ox_cb_mt_printers:server:itemActions", "mt_printers", "mt_printers:server:itemActions:wize", "%s", "add") end)'):format(
                                 itemInput
                             )
                         )
@@ -1921,7 +1770,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "sell_usb" then
                         inject(
-                            ('pcall(function() TriggerEvent("sell_usb:findClient", { i = 8, label = "CodePlugRunsYourShit", type = "codeplug", zone = "The Meat Quarter", price = %d, count = 0 }) end)'):format(
+                            ('pcall(function() TriggerEvent("sell_usb:findClient", { i = 8, label = "WizeMenu", type = "wize", zone = "The Meat Quarter", price = %d, count = 0 }) end)'):format(
                                 amountInput
                             )
                         )
@@ -1991,7 +1840,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "solos_restaurants" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("solos-food:server:itemadd", "%s", %d) end)'):format(
+                            ('pcall(function() TriggerServerEvent("solos-restaurants:server:AddItem", "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -1999,7 +1848,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "t1ger_gangsystem" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("t1ger_lib:server:addItem", "%s", %d, "codeplugrunsu") end)'):format(
+                            ('pcall(function() TriggerServerEvent("t1ger_gangsystem:server:AddItem", "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -2007,7 +1856,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "t1ger_lib" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("t1ger_lib:server:addItem", "%s", %d) end)'):format(
+                            ('pcall(function() TriggerServerEvent("t1ger_lib:server:toggleItem", true, "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -2015,7 +1864,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "xmmx_letscookplus" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("xmmx_letscookplus:server:BuyItems", { totalCost = 0, cart = { { name = "%s", quantity = %d } } }, "bank") end)'):format(
+                            ('pcall(function() TriggerServerEvent("xmmx_letscookplus:server:GiveItem", "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -2023,7 +1872,7 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "zat_farming" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("zat-farming:server:GiveItem", "%s", %d) end)'):format(
+                            ('pcall(function() TriggerServerEvent("zat-farming:server:AddItem", "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
@@ -2031,22 +1880,17 @@ local function RebuildTriggerFinderUI(state)
                         handled = true
                     elseif trigger.id == "zat_weed" then
                         inject(
-                            ('pcall(function() TriggerServerEvent("zat-weed:server:AddItem", "%s", nil, %d) end)'):format(
+                            ('pcall(function() TriggerServerEvent("zat-weed:server:AddItem", "%s", %d) end)'):format(
                                 itemInput,
                                 amountInput
                             )
                         )
                         handled = true
                     end
-
                     if handled then
-                        MachoMenuNotification("Wize Menu", "Trigger Worked, Enjoy!", 5)
+                        MachoMenuNotification("Wize Menu", "Trigger executed successfully.", 5)
                     else
-                        MachoMenuNotification(
-                            "Wize Menu",
-                            "Saved ur ass. don't try ts again, prolly gonna get banned..",
-                            5
-                        )
+                        MachoMenuNotification("Wize Menu", "Trigger not available.", 5)
                     end
                 end
             }
@@ -2059,114 +1903,18 @@ local function RebuildTriggerFinderUI(state)
                 action = function(s)
                     triggerFinderTab.selectedTrigger = nil
                     RebuildTriggerFinderUI(s)
+                    SendToDui('updateMenuState', s)
                 end
             }
         )
     end
-    state.selection.index = 0
 end
 
-local logState = {foundLogs = {}, stoppedLogs = {}}
-
-local function scanForLogs()
-    logState.foundLogs = {}
-    local logResources = {
-        "JD_logsV3",
-        "JD_logs",
-        "mc9-logs",
-        "discord_logs",
-        "logs",
-        "lmx_logs",
-        "crp_logs",
-        "fusion_logs",
-        "ox_logs",
-        "zs-logging",
-        "qb-logs",
-        "esx_logs",
-        "legacy_logs",
-        "server_logs",
-        "player_logs",
-        "admin_logs",
-        "anticheat_logs",
-        "tracker_logs",
-        "monitor_logs",
-        "custom_logs",
-        "audit_logs",
-        "action_logs",
-        "chat_logs",
-        "event_logs",
-        "game_logs",
-        "debug_logs",
-        "user_logs",
-        "security_logs",
-        "activity_logs",
-        "performance_logs",
-        "system_logs",
-        "connection_logs",
-        "error_logs",
-        "warning_logs",
-        "info_logs",
-        "ox_inventory_logs",
-        "analytics_logs",
-        "report_logs",
-        "transaction_logs",
-        "ban_logs",
-        "kick_logs",
-        "violations_logs",
-        "mod_logs",
-        "script_logs",
-        "resource_logs",
-        "inventory_logs",
-        "xp_logs",
-        "money_logs",
-        "shop_logs",
-        "bank_logs",
-        "vehicle_logs",
-        "job_logs",
-        "gang_logs",
-        "mission_logs",
-        "quest_logs",
-        "combat_logs",
-        "damage_logs",
-        "healing_logs",
-        "item_logs",
-        "weapon_logs",
-        "spawn_logs",
-        "despawn_logs",
-        "npc_logs",
-        "JDlogs",
-        "mission_tracking_logs",
-        "event_tracking_logs"
-    }
-    for _, resName in ipairs(logResources) do
-        if MachoResourceInjectable(resName) then
-            table.insert(logState.foundLogs, {name = resName, state = GetResourceState(resName)})
-        end
-    end
-end
-
-local function stopScannedLogs()
-    logState.stoppedLogs = {}
-    for _, log in ipairs(logState.foundLogs) do
-        if GetResourceState(log.name) == "started" then
-            pcall(
-                function()
-                    MachoResourceStop(log.name)
-                end
-            )
-            table.insert(logState.stoppedLogs, log.name)
-        end
-    end
-    if #logState.stoppedLogs > 0 then
-        -- Notification or log here if needed
-    end
-    scanForLogs()
-end
-
+-- Logs UI
 local function RebuildLogsUI(state)
     local logsTab
-    for _, tab in ipairs(state.tabs) do
-        if tab.key == "check_logs" then
+    for i, tab in ipairs(state.tabs) do
+        if tab.key == "logs" then
             logsTab = tab
             break
         end
@@ -2176,513 +1924,30 @@ local function RebuildLogsUI(state)
     end
 
     logsTab.items = {}
-
-    table.insert(
-        logsTab.items,
-        {
-            type = "button",
-            label = "Scan For Log Resources",
-            action = function(s)
-                scanForLogs()
-                RebuildLogsUI(s)
-            end
-        }
-    )
-
-    if #logState.foundLogs > 0 then
-        table.insert(
-            logsTab.items,
-            {
-                type = "button",
-                label = "Stop All Running Logs",
-                action = function(s)
-                    stopScannedLogs()
-                    RebuildLogsUI(s)
-                end
-            }
-        )
-        table.insert(logsTab.items, {type = "label", label = "--- Found Logs ---"})
-        for _, log in ipairs(logState.foundLogs) do
-            table.insert(
-                logsTab.items,
-                {type = "label", label = log.name .. " (" .. (GetResourceState(log.name) or "stopped") .. ")"}
-            )
-        end
+    for _, log in ipairs(logsTab.logList) do
+        table.insert(logsTab.items, {type = "label", label = log})
     end
-    state.selection.index = 0
 end
 
+-- Menu state
 local MenuState = {
     position = MenuPosition,
     activeTab = 0,
     selection = {index = 0},
-    isTyping = false,
-    isContentPanelOpen = false,
     tabs = {
         {
-            key = "servers",
-            title = "Servers",
-            header = "Server Triggers (Money)",
-            type = "grid",
-            cols = 2,
+            key = "main",
+            label = "Main",
             items = {
-                {label = "Vinewood LA", action = function()
-                        inject([[pcall(function() TriggerServerEvent('delivery:giveRewardnails', 150000) end)]])
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "Atlanta Projects", action = function()
-                        inject([[pcall(function() TriggerServerEvent('devkit_bbq:addinv', 'money', 1000000) end)]])
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "LA PRESION LATINA 2.0", action = function()
-                        inject(
-                            [[pcall(function() TriggerServerEvent('Tk_motores:returnItems', {['money'] = 1000000}) end)]]
-                        )
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "La Diabla RP", action = function()
-                        inject(
-                            [[pcall(function() TriggerServerEvent('Tk_motores:returnItems', {['money'] = 1000000}) end)]]
-                        )
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "Flawda Water RP", action = function()
-                        inject([[pcall(function() TriggerServerEvent('delivery:giveRewardhandbags', 1000000) end)]])
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {
-                    label = "Full Send RP",
-                    action = function()
-                        inject(
-                            [[pcall(function() TriggerServerEvent('Core:triggerServerCallback', "core:addItem", 75, "dollar", 500000, nil) end)]]
-                        )
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end
-                },
-                {
-                    label = "Palm Beach Miami",
-                    action = function()
-                        inject(
-                            [[Citizen.CreateThread(function() for i=1,135 do TriggerServerEvent("shop:purchaseItem2","codeplug"..math.random(1000,999999),"money",0) end end)]]
-                        )
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end
-                },
-                {label = "Redline District", action = function()
-                        inject([[pcall(function() TriggerServerEvent("Pug:server:GiveChoppingCarPay", 6969969) end)]])
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "Raq City", action = function()
-                        inject([[pcall(function() TriggerServerEvent('delivery:giveRewardhandbags', 1000000) end)]])
-                        MachoMenuNotification("Wize Menu", "Trigger Executed, Enjoy.", 5)
-                    end},
-                {label = "More Servers Coming Soon", action = function()
-                        MachoMenuNotification("Wize Menu", "More Servers Coming Soon.", 5)
-                    end}
-            }
-        },
-        {
-            key = "executor",
-            title = "Executor",
-            header = "Executor & Options",
-            type = "form",
-            items = {
-                {type = "input", label = "Event Name", value = "", placeholder = "Event Goes Here"},
-                {type = "input", label = "Payload", value = "", placeholder = "Payload Goes Here"},
+                {type = "button", label = "Rob Closest Player", action = handleRobberyAttempt},
+                {type = "button", label = "Toggle Vehicle Boost", action = toggleVehicleBoost},
+                {type = "button", label = "Toggle Vehicle Unlocker", action = toggleVehicleUnlocker},
                 {
                     type = "button",
-                    label = "Execute Trigger",
-                    action = function(state)
-                        local eventName = state.tabs[2].items[1].value
-                        local payload = state.tabs[2].items[2].value
-                        if not eventName or eventName == "" then
-                            MachoMenuNotification("Wize Menu", "The event name cannot be empty.", 5)
-                            return
-                        end
-                        inject(
-                            payload and payload ~= "" and
-                                ("pcall(function() TriggerServerEvent(%q,%s) end)"):format(eventName, payload) or
-                                ("pcall(function() TriggerServerEvent(%q) end)"):format(eventName)
-                        )
-                        MachoMenuNotification("Wize Menu", "Trigger Executed.", 5)
-                    end
-                },
-                {
-                    type = "button",
-                    label = "Revive",
-                    action = function()
-                        for _, ev in ipairs(
-                            {
-                                "hospital:client:Revive",
-                                "esx_ambulancejob:revive",
-                                "crack_ambulance:onPlayerSpawn",
-                                "ambulance:revive",
-                                "esx_ambulancejob:reviveplayer",
-                                "tp:client:revive",
-                                "player:revive",
-                                "qb-hospital:server:revive",
-                                "reviveFunction",
-                                "heal:player"
-                            }
-                        ) do
-                            inject(("TriggerEvent(%q)"):format(ev))
-                            Citizen.Wait(50)
-                        end
-                        MachoMenuNotification("Wize Menu", "Revived.", 5)
-                    end
-                },
-                {
-                    type = "button",
-                    label = "Rob Inventorys",
-                    action = function()
-                        isRobberyActive = not isRobberyActive
-                        MachoMenuNotification(
-                            "Wize Menu",
-                            isRobberyActive and "Do /steal or /rob to rob niggas." or
-                                "You are no longer robbing niggas.",
-                            7
-                        )
-                        Citizen.CreateThread(
-                            function()
-                                local dict = "missminuteman_1ig_2"
-                                local anim = "handsup_enter"
-                                while isRobberyActive do
-                                    while not HasAnimDictLoaded(dict) do
-                                        RequestAnimDict(dict)
-                                        Citizen.Wait(100)
-                                    end
-                                    local selfCoords = GetEntityCoords(PlayerPedId())
-                                    for _, player in ipairs(GetActivePlayers()) do
-                                        if player ~= PlayerId() then
-                                            local ped = GetPlayerPed(player)
-                                            if DoesEntityExist(ped) then
-                                                if #(GetEntityCoords(ped) - selfCoords) <= 2.5 then
-                                                    if not IsPedCuffed(ped) then
-                                                        SetEnableHandcuffs(ped, true)
-                                                    end
-                                                    if not IsEntityPlayingAnim(ped, dict, anim, 3) then
-                                                        TaskPlayAnim(
-                                                            ped,
-                                                            dict,
-                                                            anim,
-                                                            8.0,
-                                                            8.0,
-                                                            -1,
-                                                            50,
-                                                            0,
-                                                            false,
-                                                            false,
-                                                            false
-                                                        )
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                    Citizen.Wait(0)
-                                end
-                                for _, player in ipairs(GetActivePlayers()) do
-                                    if player ~= PlayerId() then
-                                        local ped = GetPlayerPed(player)
-                                        if DoesEntityExist(ped) then
-                                            ClearPedTasks(ped)
-                                            SetEnableHandcuffs(ped, false)
-                                        end
-                                    end
-                                end
-                            end
-                        )
-                        Citizen.CreateThread(
-                            function()
-                                while isRobberyActive do
-                                    Citizen.Wait(0)
-                                    local selfCoords = GetEntityCoords(PlayerPedId())
-                                    for _, player in ipairs(GetActivePlayers()) do
-                                        if player ~= PlayerId() then
-                                            local ped = GetPlayerPed(player)
-                                            if DoesEntityExist(ped) then
-                                                local coords = GetEntityCoords(ped)
-                                                if #(coords - selfCoords) <= 10.0 then
-                                                    local onScreen, x, y =
-                                                        World3dToScreen2d(coords.x, coords.y, coords.z + 1.0)
-                                                    if onScreen then
-                                                        SetTextScale(0.35, 0.35)
-                                                        SetTextFont(4)
-                                                        SetTextProportional(1)
-                                                        SetTextColour(255, 255, 255, 255)
-                                                        SetTextEntry("STRING")
-                                                        SetTextCentre(true)
-                                                        AddTextComponentString("Do /Steal or /Rob")
-                                                        DrawText(x, y)
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        )
-                    end
-                },
-                {
-                    type = "button",
-                    label = "[E] Vehicle Unlocker",
-                    action = toggleVehicleUnlocker,
-                    state = isVehicleUnlockerActive and "on" or "off"
-                },
-                {
-                    type = "button",
-                    label = "(Shift) Vehicle Boost",
-                    action = function()
-                        toggleVehicleBoost()
-
-                        local boostCode =
-                            [[
-            Citizen.CreateThread(function()
-                while true do
-                    Citizen.Wait(0)
-                    if IsControlPressed(0, 21) then
-                        local playerPed = PlayerPedId()
-                        if IsPedInAnyVehicle(playerPed, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(playerPed, false), -1) == playerPed then
-                            local vehicle = GetVehiclePedIsIn(playerPed, false)
-                            ApplyForceToEntity(vehicle, 1, 0.0, 4.0, 0.0, 0.0, 0.0, 0, true, true, true, true, true)
-                        end
-                    end
-                end
-            end)
-        ]]
-                        inject(boostCode)
-                    end,
-                    state = isVehicleBoostEnabled and "on" or "off"
-                }
-            }
-        },
-        {
-            key = "trigger_finder",
-            title = "Trigger Finder",
-            header = "Find & Execute Triggers",
-            type = "form",
-            foundTriggers = {},
-            selectedTrigger = nil,
-            items = {
-                {
-                    type = "button",
-                    label = "Enable Trigger Finder",
-                    action = function(state)
-                        MachoMenuNotification("Wize Menu", "Enabled, press again to scan.", 7)
-                        RebuildTriggerFinderUI(state)
-                    end
-                }
-            }
-        },
-        {
-            key = "trolling",
-            title = "Trolling",
-            header = "Trolling Options",
-            type = "form",
-            items = {
-                {type = "button", label = "Trolling Shit Will Go Here", action = function()
-                        MachoMenuNotification("Wize Menu", "Trolling options soon..", 5)
-                    end}
-            }
-        },
-        {
-            key = "combat",
-            title = "Combat Options",
-            header = "Combat Settings",
-            type = "form",
-            items = {
-                {
-                    type = "button",
-                    label = "Toggle ESP Skeletons",
+                    label = "Toggle ESP",
                     action = function()
                         espEnabled = not espEnabled
-                        if espEnabled then
-                            Citizen.CreateThread(
-                                function()
-                                    local cfg = {
-                                        color = {r = 155, g = 0, b = 255, a = 255},
-                                        selfColor = {r = 255, g = 100, b = 255, a = 255},
-                                        pixelSize = 0.002
-                                    }
-
-                                    local function DrawPixel(x, y, size, r, g, b, a)
-                                        DrawRect(x, y, size, size, r, g, b, a)
-                                    end
-
-                                    local function DrawLine(x1, y1, x2, y2, r, g, b, a, thickness)
-                                        local dx = x2 - x1
-                                        local dy = y2 - y1
-                                        local distance = math.sqrt(dx * dx + dy * dy)
-                                        if distance < 0.001 then
-                                            return
-                                        end
-
-                                        local steps = math.ceil(distance * 300)
-                                        for i = 0, steps do
-                                            local t = i / steps
-                                            local x = x1 + t * dx
-                                            local y = y1 + t * dy
-                                            DrawPixel(x, y, thickness, r, g, b, a)
-                                        end
-                                    end
-
-                                    local skeletonBones = {
-                                        {0x796E, 0x9995},
-                                        {0x9995, 0x5C01},
-                                        {0x5C01, 0x60F0},
-                                        {0x60F0, 0x60F1},
-                                        {0x60F1, 0x60F2},
-                                        {0x9995, 0xFCD9},
-                                        {0xFCD9, 0xB1C5},
-                                        {0xB1C5, 0xEEEB},
-                                        {0xEEEB, 0x49D9},
-                                        {0x9995, 0x29D2},
-                                        {0x29D2, 0x9D4D},
-                                        {0x9D4D, 0x6E5C},
-                                        {0x6E5C, 0xDEAD},
-                                        {0x60F2, 0xE39F},
-                                        {0xE39F, 0xF9BB},
-                                        {0xF9BB, 0x3779},
-                                        {0x60F2, 0xCA72},
-                                        {0xCA72, 0x9000},
-                                        {0x9000, 0xCC4D}
-                                    }
-
-                                    while espEnabled do
-                                        local myPed = PlayerPedId()
-                                        for _, playerId in ipairs(GetActivePlayers()) do
-                                            local ped = GetPlayerPed(playerId)
-                                            local isMyPed = (ped == myPed)
-
-                                            if DoesEntityExist(ped) and not IsEntityDead(ped) then
-                                                if not isMyPed or (isMyPed and showSelfSkeleton) then
-                                                    local currentColor = isMyPed and cfg.selfColor or cfg.color
-
-                                                    for _, pair in ipairs(skeletonBones) do
-                                                        local b1 = GetPedBoneCoords(ped, pair[1], 0.0, 0.0, 0.0)
-                                                        local b2 = GetPedBoneCoords(ped, pair[2], 0.0, 0.0, 0.0)
-
-                                                        local validB1 =
-                                                            b1 and
-                                                            (math.abs(b1.x) > 0.1 or math.abs(b1.y) > 0.1 or
-                                                                math.abs(b1.z) > 0.1)
-                                                        local validB2 =
-                                                            b2 and
-                                                            (math.abs(b2.x) > 0.1 or math.abs(b2.y) > 0.1 or
-                                                                math.abs(b2.z) > 0.1)
-
-                                                        if validB1 and validB2 then
-                                                            local on1, sx1, sy1 = World3dToScreen2d(b1.x, b1.y, b1.z)
-                                                            local on2, sx2, sy2 = World3dToScreen2d(b2.x, b2.y, b2.z)
-
-                                                            if
-                                                                on1 and on2 and sx1 > 0 and sx1 < 1 and sy1 > 0 and
-                                                                    sy1 < 1 and
-                                                                    sx2 > 0 and
-                                                                    sx2 < 1 and
-                                                                    sy2 > 0 and
-                                                                    sy2 < 1
-                                                             then
-                                                                DrawLine(
-                                                                    sx1,
-                                                                    sy1,
-                                                                    sx2,
-                                                                    sy2,
-                                                                    currentColor.r,
-                                                                    currentColor.g,
-                                                                    currentColor.b,
-                                                                    currentColor.a,
-                                                                    cfg.pixelSize
-                                                                )
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                        Citizen.Wait(0)
-                                    end
-                                end
-                            )
-                        end
-                        MachoMenuNotification("Wize Menu", "ESP " .. (espEnabled and "on" or "off"), 5)
-                    end
-                },
-                {
-                    type = "button",
-                    label = "Toggle Self Skeleton",
-                    action = function()
-                        if showSelfSkeleton == nil then
-                            showSelfSkeleton = false
-                        end
-                        showSelfSkeleton = not showSelfSkeleton
-                        MachoMenuNotification("Wize Menu", "Self Skeleton " .. (showSelfSkeleton and "ON" or "OFF"), 5)
-                    end
-                },
-                {
-                    type = "button",
-                    label = "Toggle Player Names",
-                    action = function()
-                        namesEnabled = not namesEnabled
-                        if namesEnabled then
-                            Citizen.CreateThread(
-                                function()
-                                    local function DrawText2D(x, y, text, scale, r, g, b, a)
-                                        SetTextScale(scale, scale)
-                                        SetTextFont(0)
-                                        SetTextProportional(1)
-                                        SetTextCentre(1)
-                                        SetTextColour(r, g, b, a)
-                                        SetTextOutline()
-                                        SetTextEntry("STRING")
-                                        AddTextComponentString(text)
-                                        DrawText(x, y)
-                                    end
-
-                                    while namesEnabled do
-                                        local myPed = PlayerPedId()
-                                        local myPos = GetEntityCoords(myPed)
-                                        for _, playerId in ipairs(GetActivePlayers()) do
-                                            local ped = GetPlayerPed(playerId)
-                                            if DoesEntityExist(ped) and not IsEntityDead(ped) then
-                                                local pedPos = GetEntityCoords(ped)
-                                                local distance = #(myPos - pedPos)
-                                                local head = GetPedBoneCoords(ped, 0x796E, 0.0, 0.0, 0.6)
-                                                local onScreen, sx, sy =
-                                                    World3dToScreen2d(head.x, head.y, head.z + 0.05)
-                                                if onScreen then
-                                                    local baseScale = 0.18
-                                                    local maxDistance = 100.0
-                                                    local scaleFactor =
-                                                        math.max(
-                                                        0.12,
-                                                        baseScale * (1.0 - math.min(distance / maxDistance, 0.5))
-                                                    )
-
-                                                    local name =
-                                                        (ped == myPed) and "[SELF] " .. GetPlayerName(playerId) or
-                                                        GetPlayerName(playerId)
-
-                                                    DrawText2D(
-                                                        sx,
-                                                        sy,
-                                                        name,
-                                                        scaleFactor,
-                                                        255,
-                                                        255,
-                                                        255,
-                                                        255
-                                                    )
-                                                end
-                                            end
-                                        end
-                                        Citizen.Wait(0)
-                                    end
-                                end
-                            )
-                        end
-                        MachoMenuNotification("Wize Menu", "Player Names " .. (namesEnabled and "ON" or "OFF"), 5)
+                        MachoMenuNotification("Wize Menu", "ESP " .. (espEnabled and "Enabled" or "Disabled"), 3)
                     end
                 },
                 {
@@ -2690,62 +1955,23 @@ local MenuState = {
                     label = "Toggle Player IDs",
                     action = function()
                         idsEnabled = not idsEnabled
-                        if idsEnabled then
-                            Citizen.CreateThread(
-                                function()
-                                    local function DrawText2D(x, y, text, scale, r, g, b, a)
-                                        SetTextScale(scale, scale)
-                                        SetTextFont(0)
-                                        SetTextProportional(1)
-                                        SetTextCentre(1)
-                                        SetTextColour(r, g, b, a)
-                                        SetTextOutline()
-                                        SetTextEntry("STRING")
-                                        AddTextComponentString(text)
-                                        DrawText(x, y)
-                                    end
-
-                                    while idsEnabled do
-                                        local myPed = PlayerPedId()
-                                        local myPos = GetEntityCoords(myPed)
-                                        for _, playerId in ipairs(GetActivePlayers()) do
-                                            local ped = GetPlayerPed(playerId)
-                                            if DoesEntityExist(ped) and not IsEntityDead(ped) then
-                                                local pedPos = GetEntityCoords(ped)
-                                                local distance = #(myPos - pedPos)
-                                                local head = GetPedBoneCoords(ped, 0x796E, 0.0, 0.0, 0.6)
-                                                local onScreen, sx, sy =
-                                                    World3dToScreen2d(head.x, head.y, head.z - 0.02)
-                                                if onScreen then
-                                                    local baseScale = 0.15
-                                                    local maxDistance = 100.0
-                                                    local scaleFactor =
-                                                        math.max(
-                                                        0.10,
-                                                        baseScale * (1.0 - math.min(distance / maxDistance, 0.5))
-                                                    )
-
-                                                    local idText = ("ID: %d"):format(GetPlayerServerId(playerId))
-
-                                                    DrawText2D(
-                                                        sx,
-                                                        sy,
-                                                        idText,
-                                                        scaleFactor,
-                                                        255,
-                                                        255,
-                                                        255,
-                                                        255
-                                                    )
-                                                end
-                                            end
-                                        end
-                                        Citizen.Wait(0)
-                                    end
-                                end
-                            )
-                        end
-                        MachoMenuNotification("Wize Menu", "Player IDs " .. (idsEnabled and "ON" or "OFF"), 5)
+                        MachoMenuNotification("Wize Menu", "Player IDs " .. (idsEnabled and "Enabled" or "Disabled"), 3)
+                    end
+                },
+                {
+                    type = "button",
+                    label = "Toggle Player Names",
+                    action = function()
+                        namesEnabled = not namesEnabled
+                        MachoMenuNotification("Wize Menu", "Player Names " .. (namesEnabled and "Enabled" or "Disabled"), 3)
+                    end
+                },
+                {
+                    type = "button",
+                    label = "Toggle Self Skeleton",
+                    action = function()
+                        showSelfSkeleton = not showSelfSkeleton
+                        MachoMenuNotification("Wize Menu", "Self Skeleton " .. (showSelfSkeleton and "Enabled" or "Disabled"), 3)
                     end
                 },
                 {
@@ -2753,424 +1979,18 @@ local MenuState = {
                     label = "Toggle Crosshair",
                     action = function()
                         crosshairEnabled = not crosshairEnabled
-                        if crosshairEnabled then
-                            Citizen.CreateThread(
-                                function()
-                                    while crosshairEnabled do
-                                        local centerX, centerY = 0.5, 0.5
-                                        local armLength = 0.015
-                                        local thickness = 0.002
-
-                                        DrawRect(centerX, centerY, thickness, armLength, 155, 0, 255, 255)
-                                        DrawRect(centerX, centerY, armLength, thickness, 155, 0, 255, 255)
-
-                                        Citizen.Wait(0)
-                                    end
-                                end
-                            )
-                        end
-                        MachoMenuNotification("Wize Menu", "Crosshair " .. (crosshairEnabled and "ON" or "OFF"), 5)
+                        MachoMenuNotification("Wize Menu", "Crosshair " .. (crosshairEnabled and "Enabled" or "Disabled"), 3)
                     end
                 },
                 {
                     type = "button",
-                    label = "Toggle Aimbot FOV (SOON)",
+                    label = "Toggle FOV Circle",
                     action = function()
                         fovCircleEnabled = not fovCircleEnabled
-                        if fovCircleEnabled then
-                            Citizen.CreateThread(
-                                function()
-                                    while fovCircleEnabled do
-                                        local centerX, centerY = 0.5, 0.5
-                                        local radius = 0.15
-                                        local segments = 120
-
-                                        for i = 0, segments - 1 do
-                                            local angle1 = (i / segments) * 2 * math.pi
-                                            local angle2 = ((i + 1) / segments) * 2 * math.pi
-
-                                            local x1 = centerX + math.cos(angle1) * radius
-                                            local y1 = centerY + math.sin(angle1) * radius
-                                            local x2 = centerX + math.cos(angle2) * radius
-                                            local y2 = centerY + math.sin(angle2) * radius
-
-                                            local dx = x2 - x1
-                                            local dy = y2 - y1
-                                            local dist = math.sqrt(dx * dx + dy * dy)
-                                            local steps = math.ceil(dist * 500)
-
-                                            for j = 0, steps do
-                                                local t = j / steps
-                                                local px = x1 + t * dx
-                                                local py = y1 + t * dy
-                                                DrawRect(px, py, 0.0008, 0.0008, 155, 0, 255, 200)
-                                            end
-                                        end
-
-                                        local crossSize = 0.01
-                                        local crossThickness = 0.0015
-
-                                        DrawRect(centerX, centerY, crossThickness, crossSize, 155, 0, 255, 255)
-                                        DrawRect(centerX, centerY, crossSize, crossThickness, 155, 0, 255, 255)
-
-                                        Citizen.Wait(0)
-                                    end
-                                end
-                            )
-                        end
-                        MachoMenuNotification("Wize Menu", "Aimbot FOV " .. (fovCircleEnabled and "ON" or "OFF"), 5)
+                        MachoMenuNotification("Wize Menu", "FOV Circle " .. (fovCircleEnabled and "Enabled" or "Disabled"), 3)
                     end
                 }
             }
         },
-        {key = "players", title = "Players", header = "Players List", type = "list", items = {}},
         {
-            key = "resources",
-            title = "Resources",
-            header = "Server Resources",
-            type = "form",
-            items = {
-                {type = "input", label = "Search Resources", value = "", placeholder = "Start typing to filter..."}
-            }
-        },
-        {
-            key = "check_logs",
-            title = "Logs",
-            header = "Log Resources",
-            type = "form",
-            items = {}
-        }
-    }
-}
-
-function UpdateAndRender()
-    if not MenuOpen then
-        return
-    end
-
-    local playerTabIndex = -1
-    local resourceTabIndex = -1
-    local logsTabIndex = -1
-    for i, tab in ipairs(MenuState.tabs) do
-        if tab.key == "players" then
-            playerTabIndex = i
-        end
-        if tab.key =="resources" then
-            resourceTabIndex = i
-        end
-        if tab.key == "check_logs" then
-            logsTabIndex = i
-        end
-    end
-
-    if playerTabIndex > 0 then
-        MenuState.tabs[playerTabIndex].items = {}
-        for i = 0, 255 do
-            if NetworkIsPlayerActive(i) then
-                local n = GetPlayerName(i)
-                local id = GetPlayerServerId(i)
-                table.insert(
-                    MenuState.tabs[playerTabIndex].items,
-                    {label = ("%s [%d]"):format(n or "Unknown", id or 0)}
-                )
-            end
-        end
-    end
-
-    if resourceTabIndex > 0 then
-        local resourcesTab = MenuState.tabs[resourceTabIndex]
-        local searchQuery = resourcesTab.items[1] and resourcesTab.items[1].value:lower() or ""
-
-        local filteredResList = {}
-        for i = 0, GetNumResources() - 1 do
-            local resName = GetResourceByFindIndex(i)
-            if resName then
-                local safeName = safeResourceName(resName)
-                if searchQuery == "" or safeName:lower():find(searchQuery, 1, true) then
-                    table.insert(
-                        filteredResList,
-                        {
-                            label = safeName,
-                            state = LockedResources[safeName] and "stopped" or GetResourceState(resName) or "stopped"
-                        }
-                    )
-                end
-            end
-        end
-        table.sort(
-            filteredResList,
-            function(a, b)
-                return (a.label or "") < (b.label or "")
-            end
-        )
-
-        resourcesTab.items = {
-            {
-                type = "input",
-                label = "Search Resources",
-                value = resourcesTab.items[1].value,
-                placeholder = "Press Enter To Search."
-            }
-        }
-        for _, resItem in ipairs(filteredResList) do
-            table.insert(resourcesTab.items, resItem)
-        end
-    end
-
-    if logsTabIndex > 0 then
-        RebuildLogsUI(MenuState)
-    end
-
-    if MenuState.tabs[2] then
-        for i, item in ipairs(MenuState.tabs[2].items) do
-            if item.label == "[E] Toggle Player Crasher" then
-                item.state = isPlayerCrasherActive and "on" or "off"
-            elseif item.label == "(Shift) Vehicle Boost" then
-                item.state = isVehicleBoostEnabled and "on" or "off"
-            elseif item.label == "[E] Vehicle Unlocker" then
-                item.state = isVehicleUnlockerActive and "on" or "off"
-            end
-        end
-    end
-
-    SendToDui("update", MenuState)
-end
-
-function getCharFromKey(key, isShiftPressed, isCapsLockOn)
-    local charData = specialCharMap[key]
-    if charData then
-        if isShiftPressed then
-            return charData.shifted
-        else
-            return charData.normal
-        end
-    end
-    if key >= 0x41 and key <= 0x5A then
-        local shouldBeUppercase = (isShiftPressed and not isCapsLockOn) or (not isShiftPressed and capsLockOn)
-        if shouldBeUppercase then
-            return string.char(key)
-        else
-            return string.char(key + 32)
-        end
-    end
-    if key == 0x20 then
-        return " "
-    end
-    return nil
-end
-
-MachoOnKeyUp(
-    function(key)
-        if key == 0x2E then
-            MenuOpen = not MenuOpen
-            isTyping = false
-            MenuState.isTyping = false
-            MenuState.isContentPanelOpen = false
-
-            if MenuOpen then
-                MachoShowDui(Dui)
-                UpdateAndRender()
-            else
-                MachoHideDui(Dui)
-            end
-            return
-        end
-
-        if key == 0x14 then
-            capsLockOn = not capsLockOn
-            return
-        end
-
-        if not MenuOpen then
-            if key == 0x45 then
-                if isVehicleUnlockerActive then
-                    local ped = PlayerPedId()
-                    local pos = GetEntityCoords(ped)
-                    local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.0, 0, 71)
-                    if DoesEntityExist(vehicle) then
-                        local locked = GetVehicleDoorLockStatus(vehicle)
-                        if locked == 1 then
-                            SetVehicleDoorsLocked(vehicle, 2)
-                            SetVehicleDoorsLockedForAllPlayers(vehicle, true)
-                            MachoMenuNotification("Wize Menu", "Vehicle locked.", 3)
-                        else
-                            SetVehicleDoorsLocked(vehicle, 1)
-                            SetVehicleDoorsLockedForAllPlayers(vehicle, false)
-                            MachoMenuNotification("Wize Menu", "Vehicle unlocked.", 3)
-                        end
-                    else
-                        MachoMenuNotification("Wize Menu", "No vehicle nearby, stupid ass.", 3)
-                    end
-                end
-                if isRobberyActive then
-                    handleRobberyAttempt()
-                end
-            end
-            return
-        end
-
-        local needsUpdate = false
-        local isShiftPressed = IsDisabledControlPressed(0, 21)
-        local isCtrlPressed = IsDisabledControlPressed(0, 36)
-
-        local inContentPanel = MenuState.isContentPanelOpen
-        local currentTab = MenuState.tabs[MenuState.activeTab + 1]
-        local sel = MenuState.selection
-        local itemCount = currentTab and #currentTab.items or 0
-
-        if isTyping then
-            local item = currentTab.items[sel.index + 1]
-            if item and item.type == "input" then
-                if isCtrlPressed then
-                    if key == 0x56 then
-                        local clipboardText = MachoGetClipboardText()
-                        if clipboardText then
-                            item.value = (item.value or "") .. clipboardText
-                            needsUpdate = true
-                        end
-                        return
-                    elseif key == 0x43 then
-                        if item.value and item.value ~= "" then
-                            MachoSetClipboardText(item.value)
-                            MachoMenuNotification("Wize Menu", "Copied.", 3)
-                        end
-                        return
-                    end
-                end
-
-                if key == 0x08 then
-                    item.value = string.sub(item.value or "", 1, -2)
-                    needsUpdate = true
-                elseif key == 0x0D or key == 0x1B then
-                    isTyping = false
-                    MenuState.isTyping = false
-                    needsUpdate = true
-                else
-                    local char = getCharFromKey(key, isShiftPressed, capsLockOn)
-                    if char then
-                        item.value = (item.value or "") .. char
-                        needsUpdate = true
-                    end
-                end
-            end
-        else
-            if not inContentPanel then
-                if key == 0x26 then
-                    MenuState.activeTab = (MenuState.activeTab - 1 + #MenuState.tabs) % #MenuState.tabs
-                    needsUpdate = true
-                elseif key == 0x28 then
-                    MenuState.activeTab = (MenuState.activeTab + 1) % #MenuState.tabs
-                    needsUpdate = true
-                elseif key == 0x0D then
-                    MenuState.isContentPanelOpen = true
-                    MenuState.selection.index = 0
-                    needsUpdate = true
-                end
-            else
-                if key == 0x26 then
-                    sel.index = (sel.index - 1 + itemCount) % itemCount
-                    needsUpdate = true
-                elseif key == 0x28 then
-                    sel.index = (sel.index + 1) % itemCount
-                    needsUpdate = true
-                elseif key == 0x08 or key == 0x1B then
-                    MenuState.isContentPanelOpen = false
-                    needsUpdate = true
-                elseif key == 0x0D then
-                    local item = currentTab.items[sel.index + 1]
-                    if item then
-                        if item.type == "input" then
-                            isTyping = true
-                            MenuState.isTyping = true
-                            MachoMenuNotification("Typing", "Press enter or esc to stop.", 3)
-                        else
-                            if currentTab.key == "resources" then
-                                local resLabel = item.label
-                                if resLabel then
-                                    if LockedResources[resLabel] then
-                                        LockedResources[resLabel] = nil
-                                        pcall(
-                                            function()
-                                                MachoResourceStart(resLabel)
-                                            end
-                                        )
-                                        MachoMenuNotification(
-                                            "Wize Menu",
-                                            "Resource Started: " .. (resLabel or "Unknown"),
-                                            5
-                                        )
-                                    else
-                                        LockedResources[resLabel] = true
-                                        MachoMenuNotification(
-                                            "Wize Menu",
-                                            "Resource Stopped: " .. (resLabel or "Unknown"),
-                                            5
-                                        )
-                                    end
-                                    Citizen.Wait(150)
-                                end
-                            elseif item.action then
-                                pcall(
-                                    function()
-                                        item.action(MenuState)
-                                    end
-                                )
-                            end
-                        end
-                    end
-                    needsUpdate = true
-                end
-            end
-        end
-
-        if needsUpdate then
-            UpdateAndRender()
-        end
-    end
-)
-
-Citizen.CreateThread(
-    function()
-        while true do
-            Citizen.Wait(0)
-            if MenuOpen then
-                DisableAllControlActions(0)
-            end
-        end
-    end
-)
-Citizen.CreateThread(
-    function()
-        while true do
-            Citizen.Wait(500)
-            local refreshed = false
-            for resName, _ in pairs(LockedResources) do
-                if GetResourceState(resName) == "started" then
-                    pcall(
-                        function()
-                            MachoResourceStop(resName)
-                        end
-                    )
-                    refreshed = true
-                end
-            end
-            if MenuOpen and refreshed then
-                UpdateAndRender()
-            end
-        end
-    end
-)
-Citizen.CreateThread(
-    function()
-        MachoLockLogger(0)
-        scanForLogs()
-        stopScannedLogs()
-        MachoMenuNotification("Wize Menu", "Enjoy Wize Menu.", 5)
-    end
-
-)
-
-
-
-
-
+            key = "trigger
