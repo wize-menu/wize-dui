@@ -1,4 +1,3 @@
--- Wize Menu
 local DuiUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wize.html"
 local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
@@ -155,3 +154,4 @@ end)
 RegisterNUICallback('inputChange', function(data)
     MenuState.tabs[data.tabIndex + 1].items[data.itemIndex + 1].value = data.value
 end)
+
