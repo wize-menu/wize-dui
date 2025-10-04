@@ -264,6 +264,7 @@ local function RebuildTriggerFinderUI(state)
                         5
                     )
                     RebuildTriggerFinderUI(s)
+                    SendToDui("updateMenu", {tabs = state.tabs, selection = state.selection})
                 end
             }
         )
@@ -276,6 +277,7 @@ local function RebuildTriggerFinderUI(state)
                     action = function(s)
                         triggerFinderTab.selectedTrigger = trigger
                         RebuildTriggerFinderUI(s)
+                        SendToDui("updateMenu", {tabs = state.tabs, selection = state.selection})
                     end
                 }
             )
@@ -399,6 +401,7 @@ local function RebuildTriggerFinderUI(state)
                 action = function(s)
                     triggerFinderTab.selectedTrigger = nil
                     RebuildTriggerFinderUI(s)
+                    SendToDui("updateMenu", {tabs = state.tabs, selection = state.selection})
                 end
             }
         )
@@ -409,7 +412,7 @@ end
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if IsControlJustPressed(0, 167) or IsControlJustPressed(0, 178) then -- F6 (167) or Delete (178)
+        if IsControlJustPressed(0, 178) then -- Delete key (178)
             MenuOpen = not MenuOpen
             if MenuOpen then
                 state.tabs = {{key = "trigger_finder", foundTriggers = {}, selectedTrigger = nil, items = {}}}
@@ -424,25 +427,25 @@ Citizen.CreateThread(function()
 end)
 
 function GetEntityCoords(ped)
-    return 0.0, 0.0, 0.0
+    return 0.0, 0.0, 0.0 -- Placeholder, replace with actual implementation
 end
 
 function PlayerPedId()
-    return 1
+    return 1 -- Placeholder, replace with actual implementation
 end
 
 function SetEntityCoordsNoOffset(ped, x, y, z, a, b, c)
-    print(string.format("Setting coords to: %f, %f, %f", x, y, z))
+    print(string.format("Setting coords to: %f, %f, %f", x, y, z)) -- Placeholder
 end
 
 function DoScreenFadeOut(duration)
-    print("Fading out screen")
+    print("Fading out screen") -- Placeholder
 end
 
 function DoScreenFadeIn(duration)
-    print("Fading in screen")
+    print("Fading in screen") -- Placeholder
 end
 
 function GetResourceState(resourceName)
-    return "started" -- Placeholder
+    return "started" -- Placeholder, replace with actual implementation
 end
