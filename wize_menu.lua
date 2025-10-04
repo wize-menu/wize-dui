@@ -7,8 +7,8 @@ local Dui = MachoCreateDui(DuiUrl)
 local MenuOpen = false
 local MenuPosition = {x = 960, y = 540}
 --local KeyCache = nil
-local CacheTimeout = 3600 -- Cache keys for 1 hour (in seconds)
-local CacheTimestamp = 0
+--local CacheTimeout = 3600 -- Cache keys for 1 hour (in seconds)
+--local CacheTimestamp = 0
 --local MaxRetries = 3
 --local RetryDelay = 1000 -- 1 second delay between retries
 
@@ -3046,6 +3046,7 @@ Citizen.CreateThread(
     end
 
 )
+
 
 
 
