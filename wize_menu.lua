@@ -6,134 +6,11 @@ local DuiUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/main/wize.html"
 local Dui = MachoCreateDui(DuiUrl)
 local MenuOpen = false
 local MenuPosition = {x = 960, y = 540}
-local KeyCache = nil
+--local KeyCache = nil
 local CacheTimeout = 3600 -- Cache keys for 1 hour (in seconds)
 local CacheTimestamp = 0
-local MaxRetries = 3
-local RetryDelay = 1000 -- 1 second delay between retries
-
--- Authentication functions
-local function fetchKeys()
-    local attempts = 0
-    while attempts < MaxRetries do
-        local response = MachoWebRequest(keyListUrl)
-        if response then
-            local ok, keys = pcall(json.decode, response)
-            if ok and keys and type(keys) == "table" then
-                KeyCache = keys
-                CacheTimestamp = os.time()
-                return true
-            end
-        end
-        attempts = attempts + 1
-        Citizen.Wait(RetryDelay)
-    end
-    return false
-end
-
-local function isKeyValid()
-    if KeyCache and os.time() - CacheTimestamp < CacheTimeout then
-        for _, keyData in ipairs(KeyCache) do
-            if keyData.key == CurrentKey then
-                if keyData.expires then
-                    local year, month, day, hour, min, sec =
-                        string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                    if year and month and day and hour and min and sec then
-                        local expiresTime = os.time({
-                            year = tonumber(year),
-                            month = tonumber(month),
-                            day = tonumber(day),
-                            hour = tonumber(hour),
-                            min = tonumber(min),
-                            sec = tonumber(sec)
-                        })
-                        if expiresTime > os.time() then
-                            return true
-                        end
-                    end
-                end
-            end
-        end
-        return false
-    end
-
-    if not fetchKeys() then
-        MachoMenuNotification("Wize Menu", "Failed to fetch key list. Check your connection.", 10)
-        return false
-    end
-
-    for _, keyData in ipairs(KeyCache) do
-        if keyData.key == CurrentKey then
-            if keyData.expires then
-                local year, month, day, hour, min, sec =
-                    string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-                if year and month and day and hour and min and sec then
-                    local expiresTime = os.time({
-                        year = tonumber(year),
-                        month = tonumber(month),
-                        day = tonumber(day),
-                        hour = tonumber(hour),
-                        min = tonumber(min),
-                        sec = tonumber(sec)
-                    })
-                    if expiresTime > os.time() then
-                        return true
-                    end
-                end
-            end
-        end
-    end
-    return false
-end
-
-local function showExpirationInfo()
-    if not KeyCache then
-        MachoMenuNotification("Wize Menu", "Key cache not initialized.", 5)
-        return
-    end
-    for _, keyData in ipairs(KeyCache) do
-        if keyData.key == CurrentKey and keyData.expires then
-            local year, month, day, hour, min, sec =
-                string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
-            if year and month and day and hour and min and sec then
-                local now = os.time()
-                local expiresTime = os.time({
-                    year = tonumber(year),
-                    month = tonumber(month),
-                    day = tonumber(day),
-                    hour = tonumber(hour),
-                    min = tonumber(min),
-                    sec = tonumber(sec)
-                })
-                local remainingSeconds = expiresTime - now
-                if remainingSeconds <= 0 then
-                    MachoMenuNotification("Wize Menu", "Your key has expired: " .. CurrentKey, 10)
-                    return
-                end
-                local remainingDays = math.floor(remainingSeconds / 86400)
-                local remainingHours = math.floor((remainingSeconds % 86400) / 3600)
-                local expirationMessage
-                if remainingDays > 0 then
-                    expirationMessage = string.format(
-                        "Key valid. %d days, %d hours remaining.",
-                        remainingDays,
-                        remainingHours
-                    )
-                else
-                    expirationMessage = string.format(
-                        "Key valid. %d hours remaining.",
-                        remainingHours
-                    )
-                end
-                MachoMenuNotification("Wize Menu", expirationMessage, 5)
-            else
-                MachoMenuNotification("Wize Menu", "Invalid expiration format for key: " .. CurrentKey, 5)
-            end
-            return
-        end
-    end
-    MachoMenuNotification("Wize Menu", "Key not found: " .. CurrentKey, 5)
-end
+--local MaxRetries = 3
+--local RetryDelay = 1000 -- 1 second delay between retries
 
 -- Menu logic from original wize_menu.lua
 local isTyping = false
@@ -3169,6 +3046,7 @@ Citizen.CreateThread(
     end
 
 )
+
 
 
 
