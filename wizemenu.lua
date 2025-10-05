@@ -280,7 +280,7 @@ local function CheckResource(resource)
 end
 
 
-local function LoadBypasses()
+--[[ local function LoadBypasses()
     Wait(1500)
 
     MachoMenuNotification("[NOTIFICATION] WizeMenu", "Loading Bypasses.")
@@ -320,7 +320,7 @@ local function LoadBypasses()
     MachoMenuNotification("[NOTIFICATION] WizeMenu", "Finished Enjoy.")
 end
 
-LoadBypasses()
+LoadBypasses() ]]
 
 local targetResource
 if GetResourceState("qbx_core") == "started" then
@@ -5317,10 +5317,9 @@ end)
 MachoMenuButton(VIPTabSections[2], "Police Job", function()
     if not HasValidKey() then return end
 
-    if CheckResource("wasabi_multijob") then
-        MachoInjectResource("wasabi_multijob", [[
-            local job = { label = "Police", name = "police", grade = 1, grade_label = "Officer", grade_name = "officer" }
-            CheckJob(job, true) 
+    if CheckResource("wasabi_police") then
+        MachoInjectResource('es_extended', [[
+    TriggerEvent('esx:setJob', {name = "police", label = "LSPD", grade = 3, grade_name = "officer", grade_label = "Captain"})
         ]])
     else
         MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
@@ -5330,8 +5329,8 @@ end)
 MachoMenuButton(VIPTabSections[2], "EMS Job", function()
     if not HasValidKey() then return end
 
-    if CheckResource("wasabi_multijob") then
-        MachoInjectResource("wasabi_multijob", [[
+    if CheckResource("wasabi_ambulance") then
+        MachoInjectResource("wasabi_ambulance", [[
             local job = { label = "EMS", name = "ambulance", grade = 1, grade_label = "Medic", grade_name = "medic" }
             CheckJob(job, true) 
         ]])
@@ -5340,107 +5339,107 @@ MachoMenuButton(VIPTabSections[2], "EMS Job", function()
     end
 end)
 
-MachoMenuButton(VIPTabSections[3], "Staff (1) (BETA) - Menu", function()
-    if not HasValidStaffKey() then return end
+--MachoMenuButton(VIPTabSections[3], "Staff (1) (BETA) - Menu", function()
+    --if not HasValidStaffKey() then return end
 
-    if CheckResource("mc9-adminmenu") then
-        MachoInjectResource2(2, 'mc9-adminmenu', [[
-            _G.lib = _G.lib or lib
-            _G.QBCore = _G.QBCore or exports['qb-core']:GetCoreObject()
+   -- if CheckResource("mc9-adminmenu") then
+      --  MachoInjectResource2(2, 'mc9-adminmenu', [[
+    --        _G.lib = _G.lib or lib
+     --       _G.QBCore = _G.QBCore or exports['qb-core']:GetCoreObject()
 
-            _G.lib.callback.register("mc9-adminmenu:callback:GetAllowedActions", function()
-                local all = {}
-                for k, v in pairs(_G.Config.Actions) do
-                    all[k] = true
-                end
-                return all
-            end)
+     --       _G.lib.callback.register("mc9-adminmenu:callback:GetAllowedActions", function()
+      --          local all = {}
+      --          for k, v in pairs(_G.Config.Actions) do
+       --             all[k] = true
+        --        end
+         --       return all
+         --   end)
 
-            _G.CheckPerms = function(_)
-                return true
-            end
+         --   _G.CheckPerms = function(_)
+          --      return true
+          --  end
 
-            _G.setupMenu = function()
-                _G.PlayerData = _G.QBCore.Functions.GetPlayerData()
-                _G.QBCore.Shared.Vehicles = _G.lib.callback.await("mc9-adminmenu:callback:GetSharedVehicles", false)
-                _G.resources = _G.lib.callback.await("mc9-adminmenu:callback:GetResources", false)
-                _G.commands = _G.lib.callback.await("mc9-adminmenu:callback:GetCommands", false)
-                _G.GetData()
+          --  _G.setupMenu = function()
+            --    _G.PlayerData = _G.QBCore.Functions.GetPlayerData()
+            --    _G.QBCore.Shared.Vehicles = _G.lib.callback.await("mc9-adminmenu:callback:GetSharedVehicles", false)
+            --    _G.resources = _G.lib.callback.await("mc9-adminmenu:callback:GetResources", false)
+            --    _G.commands = _G.lib.callback.await("mc9-adminmenu:callback:GetCommands", false)
+            --    _G.GetData()
 
-                _G.actions = {}
-                for k, v in pairs(_G.Config.Actions) do
-                    _G.actions[k] = v
-                end
+            --    _G.actions = {}
+             --   for k, v in pairs(_G.Config.Actions) do
+             --       _G.actions[k] = v
+             --   end
 
-                _G.playerActions = {}
-                for k, v in pairs(_G.Config.PlayerActions or {}) do
-                    _G.playerActions[k] = v
-                end
+             --   _G.playerActions = {}
+             --   for k, v in pairs(_G.Config.PlayerActions or {}) do
+             --       _G.playerActions[k] = v
+             --   end
 
-                _G.otherActions = {}
-                for k, v in pairs(_G.Config.OtherActions or {}) do
-                    _G.otherActions[k] = v
-                end
+             --   _G.otherActions = {}
+             --   for k, v in pairs(_G.Config.OtherActions or {}) do
+             --       _G.otherActions[k] = v
+             --   end
 
-                _G.SendNUIMessage({
-                    action = "setupUI",
-                    data = {
-                        actions = _G.actions,
-                        playerActions = _G.playerActions,
-                        otherActions = _G.otherActions,
-                        resources = _G.resources,
-                        playerData = _G.PlayerData,
-                        commands = _G.commands,
-                        weapons = _G.QBCore.Shared.Weapons,
-                    }
-                })
+             --   _G.SendNUIMessage({
+              --      action = "setupUI",
+              --      data = {
+              --          actions = _G.actions,
+              --          playerActions = _G.playerActions,
+              --          otherActions = _G.otherActions,
+              --          resources = _G.resources,
+              --          playerData = _G.PlayerData,
+              --          commands = _G.commands,
+              --          weapons = _G.QBCore.Shared.Weapons,
+              --      }
+              --  })
 
-                _G.uiReady = true
-            end
+               -- _G.uiReady = true
+           -- end
 
-            _G.setupMenu()
-            _G.ToggleUI(true)
-        ]])
-    else
-        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
-    end
-end)
+           -- _G.setupMenu()
+           -- _G.ToggleUI(true)
+        --]])
+    --else
+    --    MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
+    --end
+--end)
 
-MachoMenuButton(VIPTabSections[3], "Staff (2) (BETA) - Announce", function()
-    if not HasValidStaffKey() then return end
+--MachoMenuButton(VIPTabSections[3], "Staff (2) (BETA) - Announce", function()
+    --if not HasValidStaffKey() then return end
 
-    if CheckResource("ps-dispatch") then
-        MachoInjectResource2(2, 'ps-dispatch', [[
-            local AllJobs = {
-                'police','sheriff','state','ranger','ambulance','ems','doc','doj',
-                'mechanic','bennys','lsc','tow','taxi','bus','trucker','garbage',
-                'news','realestate','cardealer','gruppe6','casino','government','judge','lawyer',
-                'unemployed'
-            }
+   -- if CheckResource("ps-dispatch") then
+      --  MachoInjectResource2(2, 'ps-dispatch', [[
+        --    local AllJobs = {
+          --      'police','sheriff','state','ranger','ambulance','ems','doc','doj',
+            --    'mechanic','bennys','lsc','tow','taxi','bus','trucker','garbage',
+              --  'news','realestate','cardealer','gruppe6','casino','government','judge','lawyer',
+                --'unemployed'
+            --}
 
-            local data = {
-                message = 'Hey, I’m JTG — one of the best devs in the FiveM scene. Hit me up: YT JayThaaGamer - P.S. JTG',
-                codeName = 'j5_blast',
-                code = '',
-                icon = 'fas fa-bullhorn',
-                priority = 1,
-                coords = vector3(0.0, 0.0, 0.0),
-                alertTime = 9999,
-                jobs = AllJobs,
-                alert = { radius=200, sprite=84, color=1, scale=2.0, length=15, flash=true }
-            }
+            --local data = {
+              --  message = 'Hey, I’m JTG — one of the best devs in the FiveM scene. Hit me up: YT JayThaaGamer - P.S. JTG',
+                --codeName = 'j5_blast',
+                --code = '',
+                --icon = 'fas fa-bullhorn',
+                --priority = 1,
+                --coords = vector3(0.0, 0.0, 0.0),
+                ---alertTime = 9999,
+                ---jobs = AllJobs,
+                ---alert = { radius=200, sprite=84, color=1, scale=2.0, length=15, flash=true }
+            --}
 
-            local function WoodyBETA()
-                _G.Twiga = TriggerServerEvent
-                _G.Twiga('ps-dispatch:server:notify', data)
-            end
+            --local function WoodyBETA()
+              --  _G.Twiga = TriggerServerEvent
+                --_G.Twiga('ps-dispatch:server:notify', data)
+            --end
 
-            WoodyBETA()
-        ]])
-    else
-        MachoMenuNotification("[NOTIFICATION] Wize Menu", "Resource Not Found.")
-    end
-end)
+            --WoodyBETA()
+        --]])
+    --else
+    --    MachoMenuNotification("[NOTIFICATION] Wize Menu", "Resource Not Found.")
+  --  end
+--end)
 
 -- MachoMenuCheckbox(VIPTabSections[3], "RPG Kill Everyone", function()
 --     if not HasValidKey() then return end
