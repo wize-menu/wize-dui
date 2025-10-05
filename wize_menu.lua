@@ -1,26 +1,96 @@
-local function urlencode(str)
-    if not str then return "" end
-    str = str:gsub("\n", "\r\n")
-    str = str:gsub("([^%w%-_%.%~])", function(c) return string.format("%%%02X", string.byte(c)) end)
-    return str
+-- Menu Builder
+local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
+local KeysBin = MachoWebRequest(keyListUrl)
+local CurrentKey = MachoAuthenticationKey()
+
+local function isKeyValid()
+    if not KeysBin then
+        return false
+    end
+
+    local ok, keys = pcall(json.decode, KeysBin)
+    if not ok or not keys or type(keys) ~= "table" then
+        return false
+    end
+
+    local now = os.time()
+    for _, keyData in ipairs(keys) do
+        if keyData.key == CurrentKey then
+            if keyData.expires then
+                local year, month, day, hour, min, sec =
+                    string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
+                if year and month and day and hour and min and sec then
+                    local expiresTime =
+                        os.time(
+                        {
+                            year = tonumber(year),
+                            month = tonumber(month),
+                            day = tonumber(day),
+                            hour = tonumber(hour),
+                            min = tonumber(min),
+                            sec = tonumber(sec)
+                        }
+                    )
+                    if expiresTime > now then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+
+    return false
 end
-local function is_likely_json(s)
-    if type(s) ~= "string" then return false end
-    local first = (s:match("^%s*(.)") or "")
-    return first == "{" or first == "["
+
+if not isKeyValid() then
+    MachoMenuNotification("WizeMenu", "Your key ain't valid lmfao: " .. CurrentKey, 10)
+    return
 end
-local function json_decode_safe(s)
-    if not (json and json.decode) then return nil end
-    local ok, t = pcall(json.decode, s)
-    if ok and type(t) == "table" then return t end
-    return nil
-end
-local function safe_web_request(url)
-    if type(MachoWebRequest) ~= "function" then return nil end
-    local ok, resp = pcall(MachoWebRequest, url)
-    if not ok then return nil end
-    return resp
-end
+
+Citizen.CreateThread(
+    function()
+        local ok, keys = pcall(json.decode, KeysBin)
+        if ok and keys and type(keys) == "table" then
+            for _, keyData in ipairs(keys) do
+                if keyData.key == CurrentKey and keyData.expires then
+                    local year, month, day, hour, min, sec =
+                        string.match(keyData.expires, "([%d]+)-([%d]+)-([%d]+)T([%d]+):([%d]+):([%d]+)Z")
+                    if year and month and day and hour and min and sec then
+                        local now = os.time()
+                        local expiresTime =
+                            os.time(
+                            {
+                                year = tonumber(year),
+                                month = tonumber(month),
+                                day = tonumber(day),
+                                hour = tonumber(hour),
+                                min = tonumber(min),
+                                sec = tonumber(sec)
+                            }
+                        )
+                        local remainingSeconds = expiresTime - now
+                        local remainingDays = math.floor(remainingSeconds / 86400)
+                        local remainingHours = math.floor((remainingSeconds % 86400) / 3600)
+
+                        local expirationMessage
+                        if remainingDays > 0 then
+                            expirationMessage =
+                                string.format(
+                                "You have %d days and %d hours left. Enjoy!",
+                                remainingDays,
+                                remainingHours
+                            )
+                        else
+                            expirationMessage = string.format("You have %d hours left. Enjoy!", remainingHours)
+                        end
+                        MachoMenuNotification("WizeMenu", expirationMessage, 5)
+                    end
+                    break
+                end
+            end
+        end
+    end
+)
 
 local MenuSize = vec2(750, 500)
 local MenuStartCoords = vec2(500, 500)
@@ -35,7 +105,7 @@ local SectionChildHeight = MenuSize.y - (2 * SectionsPadding)
 local ColumnWidth = (SectionChildWidth - (SectionsPadding * 3)) / 2
 local HalfHeight = (SectionChildHeight - (SectionsPadding * 3)) / 2
 
-local MenuWindow = MachoMenuTabbedWindow("Fodo", MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y, TabsBarWidth)
+local MenuWindow = MachoMenuTabbedWindow("WizeMenu", MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y, TabsBarWidth)
 MachoMenuSetKeybind(MenuWindow, 0x14)
 MachoMenuSetAccent(MenuWindow, 52, 137, 235)
 
@@ -214,7 +284,7 @@ end
 local function LoadBypasses()
     Wait(1500)
 
-    MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Loading Bypasses.")
+    MachoMenuNotification("[NOTIFICATION] WizeMenu", "Loading Bypasses.")
 
     local function DetectFiveGuard()
         local function ResourceFileExists(resourceName, fileName)
@@ -244,11 +314,11 @@ local function LoadBypasses()
 
     Wait(100)
 
-    MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Finalizing.")
+    MachoMenuNotification("[NOTIFICATION] WizeMenu", "Finalizing.")
 
     Wait(500)
 
-    MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Finished Enjoy.")
+    MachoMenuNotification("[NOTIFICATION] WizeMenu", "Finished Enjoy.")
 end
 
 LoadBypasses()
@@ -435,10 +505,7 @@ end)
 --             local yuTiZtxOXVnE = SetEntityProofs
 
 --             tBVAZMubUXmO(PlayerPedId(), true)
---             yuTiZtxOXVnE(PlayerPedId(), false, false, false, false, false, false, false, false)
---         end
---     ]])
--- end)
+--             yuTiZtxOXVnE(PlayerPedId(), false
 
 MachoMenuCheckbox(PlayerTabSections[1], "Invisibility", function()
     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
@@ -5649,9 +5716,3 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
-
-
-
-
-
-
