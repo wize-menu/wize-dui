@@ -108,7 +108,7 @@ local MenuWindow = MachoMenuTabbedWindow("WizeMenu", MenuStartCoords.x, MenuStar
 MachoMenuSetKeybind(MenuWindow, 0x14)
 MachoMenuSetAccent(MenuWindow, 52, 137, 235)
 
-MachoMenuText(MenuWindow, "YOUTUBE @JayThaaGamer")
+MachoMenuText(MenuWindow, "YouTUBE/@JayThaaGamer")
 
 -- local function CreateRainbowInterface()
 --     CreateThread(function()
@@ -5715,6 +5715,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
