@@ -665,6 +665,13 @@ local function RebuildTriggerFinderUI(state)
                             all = false
                         },
                         {
+                            id = "complete_hunting",
+                            name = "Any Item Trigger (Medium Risk)",
+                            type = "item",
+                            res = {"hunting"},
+                            all = false
+                        },
+                        {
                             id = "inside_fruitpicker",
                             name = "Money Trigger (Medium Risk)",
                             type = "money",
