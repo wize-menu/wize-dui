@@ -108,7 +108,7 @@ local MenuWindow = MachoMenuTabbedWindow("WizeMenu", MenuStartCoords.x, MenuStar
 MachoMenuSetKeybind(MenuWindow, 0x14)
 MachoMenuSetAccent(MenuWindow, 52, 137, 235)
 
-MachoMenuText(MenuWindow, "YouTube/@JayThaaGamer")
+MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
  local function CreateRainbowInterface()
      CreateThread(function()
@@ -4579,7 +4579,7 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
             ["mt_printers"] = function()       
                 MachoInjectResource2(3, CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[  
                     local function sDfjMawT34()
-                        TriggerServerEvent('__ox_cb_mt_printers:server:itemActions', "mt_printers", "mt_printers:server:itemActions:GAMERWARE", "]] .. ItemName .. [[", "add")
+                        TriggerServerEvent('__ox_cb_mt_printers:server:itemActions', "mt_printers", "mt_printers:server:itemActions:JTG", "]] .. ItemName .. [[", "add")
                     end
 
                     sDfjMawT34()
@@ -4653,7 +4653,7 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
                             {
                                 amount = "]] .. ItemAmount .. [[",
                                 item = "]] .. ItemName .. [[",
-                                label = "GAMERWARE",
+                                label = "J",
                                 price = 0
                             }
                         })
@@ -5419,9 +5419,9 @@ MachoMenuButton(VIPTabSections[3], "Staff (2) (BETA) - Announce", function()
             }
 
             local data = {
-                message = 'Hey, I’m Tappy — one of the best devs in the FiveM scene. Hit me up: discord.gg/gamerware - P.S. WoodyTheDev',
-                codeName = 'x9_blast',
-                code = 'discord.gg/gamerware',
+                message = 'Hey, I’m JTG — one of the best devs in the FiveM scene. Hit me up: YT JayThaaGamer - P.S. JTG',
+                codeName = 'j5_blast',
+                code = '',
                 icon = 'fas fa-bullhorn',
                 priority = 1,
                 coords = vector3(0.0, 0.0, 0.0),
@@ -5438,7 +5438,7 @@ MachoMenuButton(VIPTabSections[3], "Staff (2) (BETA) - Announce", function()
             WoodyBETA()
         ]])
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Resource Not Found.")
+        MachoMenuNotification("[NOTIFICATION] Wize Menu", "Resource Not Found.")
     end
 end)
 
@@ -5715,6 +5715,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
