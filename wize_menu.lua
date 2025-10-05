@@ -1,4 +1,3 @@
--- Menu Builder
 local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
@@ -5716,3 +5715,4 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
