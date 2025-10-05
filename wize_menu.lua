@@ -1416,8 +1416,8 @@ MachoMenuButton(PlayerTabSections[2], "Change Model", function()
     end
 end)
 
-MachoMenuButton(PlayerTabSections[2], "White Fodo Drip", function()
-    function WhiteFodoDrip()
+MachoMenuButton(PlayerTabSections[2], "White Thug Drip", function()
+    function WhiteThugDrip()
         local ped = PlayerPedId()
 
         -- Jacket
@@ -1434,11 +1434,11 @@ MachoMenuButton(PlayerTabSections[2], "White Fodo Drip", function()
         SetPedPropIndex(ped, 0, 1, 0, true)
     end
 
-    WhiteFodoDrip()
+    WhiteThugDrip()
 end)
 
-MachoMenuButton(PlayerTabSections[2], "Fodo Mafia Drip", function()
-    function FodoMafia()
+MachoMenuButton(PlayerTabSections[2], "JTG Mafia Drip", function()
+    function JTGMafia()
         local ped = PlayerPedId()
 
         -- Jacket
@@ -1457,7 +1457,7 @@ MachoMenuButton(PlayerTabSections[2], "Fodo Mafia Drip", function()
         SetPedPropIndex(ped, 1, 3, 0, true)
     end
 
-    FodoMafia()
+    JTGMafia()
 end)
 
 MachoMenuButton(PlayerTabSections[3], "Heal", function()
@@ -2808,7 +2808,7 @@ MachoMenuButton(TeleportTabSections[2], "Print Current Coords", function()
 
             local coords = zXcVbNmQwErTyUi(aSdFgHjKlQwErTy())
             local x, y, z = coords.x, coords.y, coords.z
-            print(string.format("[^3FODO^7] [^4DEBUG^7] - %.2f, %.2f, %.2f", x, y, z))
+            print(string.format("[^3JTG^7] [^4DEBUG^7] - %.2f, %.2f, %.2f", x, y, z))
         end
 
         Xy9TqLzVmN()
@@ -4444,8 +4444,8 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
                             items = {
                                 {
                                     id = "]] .. ItemName .. [[",
-                                    image = "FODO",
-                                    name = "FODO",
+                                    image = "JTG",
+                                    name = "JTG",
                                     page = 1,
                                     price = 500,
                                     quantity = ]] .. ItemAmount .. [[,
@@ -4469,16 +4469,16 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
                         items = {
                             {
                                 id = "]] .. ItemName .. [[",
-                                image = "FODO",
-                                name = "FODO",
-                                page = FODO,
-                                price = FODO,
+                                image = "JTG",
+                                name = "JTG",
+                                page = JTG,
+                                price = JTG,
                                 quantity = ]] .. ItemAmount .. [[,
-                                stock = FODO,
+                                stock = JTG,
                                 totalPrice = 0
                             }
                         },
-                        method = "FODO",
+                        method = "JTG",
                         total = 0
                     }, "cash")
                 end
@@ -4548,7 +4548,7 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
                 if IsAllowedIP(CurrentIP) then
                     MachoInjectResource2(3, CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
                         local function sDfjMawT34()
-                            TriggerServerEvent("cannabis_cafe:giveStockItems", { item = "]] .. ItemName .. [[", newItem = "FODO", pricePerItem = 0 }, ]] .. ItemAmount .. [[)
+                            TriggerServerEvent("cannabis_cafe:giveStockItems", { item = "]] .. ItemName .. [[", newItem = "JTG", pricePerItem = 0 }, ]] .. ItemAmount .. [[)
                         end
 
                         sDfjMawT34()
@@ -4751,7 +4751,7 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
                         local item = {
                             difficulty = { "medium", "medium" },
                             item = "]] .. ItemName .. [[",
-                            label = "FODO",
+                            label = "JTG",
                             price = { 110, 140 }
                         }
 
@@ -4847,10 +4847,10 @@ MachoMenuButton(EventTabSections[1], "Spawn", function()
         end 
 
         if not ResourceFound then
-            MachoMenuNotification("[NOTIFICATION] Fodo Menu", "No Triggers Found.")
+            MachoMenuNotification("[NOTIFICATION] JTG Menu", "No Triggers Found.")
         end
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Invalid Item or Amount.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Invalid Item or Amount.")
     end
 end)
 
@@ -4922,10 +4922,10 @@ MachoMenuButton(EventTabSections[2], "Spawn", function()
         end
 
         if not ResourceFound then
-            MachoMenuNotification("[NOTIFICATION] Fodo Menu", "No Triggers Found.")
+            MachoMenuNotification("[NOTIFICATION] JTG Menu", "No Triggers Found.")
         end
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Invalid Item or Amount.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Invalid Item or Amount.")
     end
 end)
 
@@ -5199,9 +5199,9 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
                         XTYZ = CreateThread
                         XTYZ(function()
                             for i = 1, ]] .. ItemAmount .. [[ do
-                                local fododealer = "fodolol" .. math.random(1000,9999)
-                                Fodo_TriggerServerEvent = TriggerServerEvent
-                                Fodo_TriggerServerEvent('shop:purchaseItem', fododealer, ']] .. ItemName .. [[', 0)
+                                local jtgdealer = "jtglol" .. math.random(1000,9999)
+                                JTG_TriggerServerEvent = TriggerServerEvent
+                                JTG_TriggerServerEvent('shop:purchaseItem', jtgdealer, ']] .. ItemName .. [[', 0)
                                 Wait(100)
                             end
                         end)
@@ -5253,7 +5253,7 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
                             ['price'] = 0,
                             ['item'] = "]] .. ItemName .. [[",
                             ['amount'] = ]] .. ItemAmount .. [[,
-                            ['label'] = 'FODO'
+                            ['label'] = 'JTG'
                         }, {
                             ['args'] = {
                                 ['payment'] = {
@@ -5307,10 +5307,10 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
         end 
 
         if not ResourceFound then
-            MachoMenuNotification("[NOTIFICATION] Fodo Menu", "No Triggers Found.")
+            MachoMenuNotification("[NOTIFICATION] JTG Menu", "No Triggers Found.")
         end
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Invalid Item or Amount.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Invalid Item or Amount.")
     end
 end)
 
@@ -5323,7 +5323,7 @@ MachoMenuButton(VIPTabSections[2], "Police Job", function()
             CheckJob(job, true) 
         ]])
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Resource Not Found.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
     end
 end)
 
@@ -5336,7 +5336,7 @@ MachoMenuButton(VIPTabSections[2], "EMS Job", function()
             CheckJob(job, true) 
         ]])
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Resource Not Found.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
     end
 end)
 
@@ -5402,7 +5402,7 @@ MachoMenuButton(VIPTabSections[3], "Staff (1) (BETA) - Menu", function()
             _G.ToggleUI(true)
         ]])
     else
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", "Resource Not Found.")
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
     end
 end)
 
@@ -5615,7 +5615,7 @@ end)
 
 MachoMenuButton(SettingTabSections[3], "Anti-Cheat Checker", function()
     local function notify(fmt, ...)
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", string.format(fmt, ...))
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", string.format(fmt, ...))
     end
 
     local function ResourceFileExists(resourceNameTwo, fileNameTwo)
@@ -5677,7 +5677,7 @@ end)
 
 MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local function notify(fmt, ...)
-        MachoMenuNotification("[NOTIFICATION] Fodo Menu", string.format(fmt, ...))
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", string.format(fmt, ...))
     end
 
     local function IsStarted(res)
@@ -5715,6 +5715,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
