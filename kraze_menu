@@ -1,3 +1,4 @@
+local DuiUrl ="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/wize.html"
 local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
@@ -42,7 +43,7 @@ local function isKeyValid()
 end
 
 if not isKeyValid() then
-    MachoMenuNotification("WizeMenu", "Your key ain't valid lmfao: " .. CurrentKey, 10)
+    MachoMenuNotification("JiGgY MeNu", "Your key ain't valid lmfao: " .. CurrentKey, 10)
     return
 end
 
@@ -82,7 +83,7 @@ Citizen.CreateThread(
                         else
                             expirationMessage = string.format("You have %d hours left. Enjoy!", remainingHours)
                         end
-                        MachoMenuNotification("WizeMenu", expirationMessage, 5)
+                        MachoMenuNotification("JiGgY MeNu", expirationMessage, 5)
                     end
                     break
                 end
@@ -91,6 +92,7 @@ Citizen.CreateThread(
     end
 )
 
+local Dui = MachoCreateDui(DuiUrl)
 local MenuOpen = false
 local isTyping = false
 local capsLockOn = false
