@@ -280,7 +280,7 @@ local function CheckResource(resource)
 end
 
 
-local function LoadBypasses()
+--[[ local function LoadBypasses()
     Wait(1500)
 
     MachoMenuNotification("[NOTIFICATION] WizeMenu", "Loading Bypasses.")
@@ -320,7 +320,7 @@ local function LoadBypasses()
     MachoMenuNotification("[NOTIFICATION] WizeMenu", "Finished Enjoy.")
 end
 
-LoadBypasses()
+LoadBypasses() ]]
 
 local targetResource
 if GetResourceState("qbx_core") == "started" then
@@ -5596,7 +5596,7 @@ end, function()
     ]])
 end)
 
-local r, g, b = 207, 16, 32
+local r, g, b = 52, 137, 235
 
 MachoMenuSlider(SettingTabSections[2], "R", r, 0, 255, "", 0, function(value)
     r = value
@@ -5715,7 +5715,6 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
-
 
 
 
