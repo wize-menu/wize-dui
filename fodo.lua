@@ -5596,7 +5596,7 @@ end, function()
     ]])
 end)
 
-local r, g, b = 52, 137, 235
+local r, g, b = 207, 16, 32
 
 MachoMenuSlider(SettingTabSections[2], "R", r, 0, 255, "", 0, function(value)
     r = value
@@ -5716,3 +5716,4 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     notify("Framework: %s", frameworkName)
 
 end)
+
