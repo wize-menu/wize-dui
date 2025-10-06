@@ -110,7 +110,7 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
- --[[ local function CreateRainbowInterface()
+ --[[ local function CreatebowInterface()
      CreateThread(function()
          local offset = 0.0
          while true do
@@ -126,15 +126,15 @@ MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
  CreateRainbowInterface() ]]
 
-local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
-local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
-local TeleportTab = MachoMenuAddTab(MenuWindow, "Teleport")
-local WeaponTab = MachoMenuAddTab(MenuWindow, "Weapon")
-local VehicleTab = MachoMenuAddTab(MenuWindow, "Vehicle")
-local EmoteTab = MachoMenuAddTab(MenuWindow, "Animations")
-local EventTab = MachoMenuAddTab(MenuWindow, "Triggers")
-local SettingTab = MachoMenuAddTab(MenuWindow, "Settings")
-local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
+--local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
+--local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
+--local TeleportTab = MachoMenuAddTab(MenuWindow, "Teleport")
+--local WeaponTab = MachoMenuAddTab(MenuWindow, "Weapon")
+--local VehicleTab = MachoMenuAddTab(MenuWindow, "Vehicle")
+--local EmoteTab = MachoMenuAddTab(MenuWindow, "Animations")
+--local EventTab = MachoMenuAddTab(MenuWindow, "Triggers")
+--local SettingTab = MachoMenuAddTab(MenuWindow, "Settings")
+--local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
 
 -- Tab Content
 local function PlayerTabContent(tab)
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
