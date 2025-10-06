@@ -106,7 +106,7 @@ local HalfHeight = (SectionChildHeight - (SectionsPadding * 3)) / 2
 
 local MenuWindow = MachoMenuTabbedWindow("WizeMenu", MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y, TabsBarWidth)
 MachoMenuSetKeybind(MenuWindow, 0x14)
-MachoMenuSetAccent(MenuWindow, 52, 137, 235)
+MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
