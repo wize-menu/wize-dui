@@ -110,7 +110,7 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
- local function CreateRainbowInterface()
+ --[[ local function CreateRainbowInterface()
      CreateThread(function()
          local offset = 0.0
          while true do
@@ -124,7 +124,7 @@ MachoMenuText(MenuWindow, "YT @JayThaaGamer")
      end)
  end
 
- CreateRainbowInterface()
+ CreateRainbowInterface() ]]
 
 local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
 local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
