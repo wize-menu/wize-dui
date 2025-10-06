@@ -998,7 +998,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
             local function PqLoMzNkXjWvRu(component, exclude)
                 local ped = UwEsDxCfVbGtHy()
                 local total = FdSaQwErTyUiOp(ped, component)
-                if total <= 1 then return 0 end
+                if total = 1 then return 0 end
                 local choice = exclude
                 while choice == exclude do
                     choice = math.random(0, total - 1)
@@ -1264,7 +1264,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
 
                 wfjaw4dtdu(function()
                     local start = CxZvBnMaSd()
-                    while CxZvBnMaSd() - start < 3000 do
+                    while CxZvBnMaSd() - start  3000 do
                         TeAxSpDoMj(
                             veh,
                             tgtPed,
@@ -1314,7 +1314,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local tGhXpLsMkA = AsYtGhUiMn()
                     local bErXnPoVlC = 3000
 
-                    while AsYtGhUiMn() - tGhXpLsMkA < bErXnPoVlC do
+                    while AsYtGhUiMn() - tGhXpLsMkA  bErXnPoVlC do
                         TeAxSpDoMj(
                             jCaBnErYqK,
                             xGyPtMdLoB,
@@ -1365,7 +1365,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local yTbQrXlMwA = 3000
                     local hFrMxWnZuE, dEjKzTsYnL = 180.0, 8888.0
 
-                    while CxZvBnMaSd() - kYqPmTnVzL < yTbQrXlMwA do
+                    while CxZvBnMaSd() - kYqPmTnVzL  yTbQrXlMwA do
                         TeAxSpDoMj(
                             cHvBzNtEkQ,
                             vUpYrTnMwE,
@@ -1502,7 +1502,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                 if pOiUyTrEeRwQtYy(veh) and veh ~= myVeh then
                     mNbVcCxZzLlKkJj(veh)
                     local timeout = gJkLoPiUyTrEqWe() + 500
-                    while not hGjFkDlSaPwOeIr(veh) and gJkLoPiUyTrEqWe() < timeout do
+                    while not hGjFkDlSaPwOeIr(veh) and gJkLoPiUyTrEqWe()  timeout do
                         fDeSwQaZxCvBnMm(0)
                     end
                     if hGjFkDlSaPwOeIr(veh) then
@@ -1532,7 +1532,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                 if aSdFgHjKlQwErTy(ped) and ped ~= me and not vBnMkLoPiUyTrEw(ped) then
                     tYuIoPaSdFgHjKl(ped)
                     local timeout = uIoPaSdFgHjKlQw() + 500
-                    while not yUiOpAsDfGhJkLz(ped) and uIoPaSdFgHjKlQw() < timeout do
+                    while not yUiOpAsDfGhJkLz(ped) and uIoPaSdFgHjKlQw()  timeout do
                         gJkLoPiUyTrEqWe(0)
                     end
                     if yUiOpAsDfGhJkLz(ped) then
@@ -1557,7 +1557,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                 if xAsDfGhJkLpOiUz(obj) then
                     vBnMkLoPiUyTrEw(obj)
                     local timeout = yUiOpAsDfGhJkLz() + 500
-                    while not nMzXcVbNmQwErTy(obj) and yUiOpAsDfGhJkLz() < timeout do
+                    while not nMzXcVbNmQwErTy(obj) and yUiOpAsDfGhJkLz()  timeout do
                         uIoPaSdFgHjKlQw(0)
                     end
                     if nMzXcVbNmQwErTy(obj) then
@@ -1591,7 +1591,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                         local zAsXcVbNm = GetPlayerPed(wQaSzXedC)
                         if zAsXcVbNm ~= mAxPlErOy and DoesEntityExist(zAsXcVbNm) and not IsPedDeadOrDying(zAsXcVbNm, true) then
                             local eDxCfVgBh = GetEntityCoords(zAsXcVbNm)
-                            if #(eDxCfVgBh - jUiKoLpMq) <= lKjHgFdSa then
+                            if #(eDxCfVgBh - jUiKoLpMq) = lKjHgFdSa then
                                 local xScVbNmAz = vector3(
                                     eDxCfVgBh.x + (math.random() - 0.5) * 0.8,
                                     eDxCfVgBh.y + (math.random() - 0.5) * 0.8,
@@ -1649,7 +1649,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                         local nMzXcVbNm = GetPlayerPed(bGtFrEdCv)
                         if nMzXcVbNm ~= vBnMkLoPi and DoesEntityExist(nMzXcVbNm) and not IsPedDeadOrDying(nMzXcVbNm, true) then
                             local zAsXcVbNm = GetEntityCoords(nMzXcVbNm)
-                            if #(zAsXcVbNm - xSwEdCvFr) <= mAxPlErOy then
+                            if #(zAsXcVbNm - xSwEdCvFr) = mAxPlErOy then
                                 local jUiKoLpMq = vector3(
                                     zAsXcVbNm.x + (math.random() - 0.5) * 0.8,
                                     zAsXcVbNm.y + (math.random() - 0.5) * 0.8,
@@ -1923,7 +1923,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
 
                     QwErTyUiOpAsDf(ped, true)
 
-                    if ErTyUiOpAsDfGh(ped, weapon) <= 0 then
+                    if ErTyUiOpAsDfGh(ped, weapon) = 0 then
                         GhJkLzXcVbNmQw(ped, weapon, 250)
                     end
 
@@ -2089,7 +2089,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                         KeEpOnAb(vh, true)
 
                         local eh = En_g_Health_Get(vh)
-                        if (not eh) or eh < 300.0 then
+                        if (not eh) or eh  300.0 then
                             En_g_Health_Set(vh, 900.0)
                         end
 
@@ -2745,7 +2745,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
                     
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2786,7 +2786,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2828,7 +2828,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2867,7 +2867,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2908,7 +2908,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2949,7 +2949,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -2990,7 +2990,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -3022,7 +3022,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -3063,7 +3063,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -3102,7 +3102,7 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                     local targetCoords = GetEntityCoords(targetPed)
                     local distance = #(playerCoords - targetCoords)
 
-                    if distance < closestDistance then
+                    if distance  closestDistance then
                         closestDistance = distance
                         closestPlayer = playerId
                     end
@@ -3449,14 +3449,14 @@ local v0="https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/w
                                         if targetPed ~= selfPed then
                                             local coords = GetEntityCoords(targetPed)
                                             local dist = #(selfCoords - coords)
-                                            if closestDistance == -1 or dist < closestDistance then
+                                            if closestDistance == -1 or dist  closestDistance then
                                                 closestDistance = dist
                                                 closestPlayer = player
                                             end
                                         end
                                     end
 
-                                    if closestPlayer ~= -1 and closestDistance <= 3.0 then
+                                    if closestPlayer ~= -1 and closestDistance = 3.0 then
                                         local ped = GetPlayerPed(closestPlayer)
 
                                         local CEPressPlayer = SetEnableHandcuffs
