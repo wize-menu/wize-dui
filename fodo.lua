@@ -5598,7 +5598,7 @@ end)
 
 local r, g, b = 207, 16, 32
 
-MachoMenuSlider(SettingTabSections[2], "R", r, 0, 255, "", 0, function(value)
+MachoMenuSlider(SettingTabSections[2], "R", r, 255, 255, "", 0, function(value)
     r = value
     MachoMenuSetAccent(MenuWindow, math.floor(r), math.floor(g), math.floor(b))
 end)
@@ -5716,4 +5716,5 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     notify("Framework: %s", frameworkName)
 
 end)
+
 
