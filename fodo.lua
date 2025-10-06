@@ -5598,17 +5598,17 @@ end)
 
 local r, g, b = 207, 16, 32
 
-MachoMenuSlider(SettingTabSections[2], "R", r, 255, 255, "", 0, function(value)
+MachoMenuSlider(SettingTabSections[2], "R", r, 207, 255, "", 0, function(value)
     r = value
     MachoMenuSetAccent(MenuWindow, math.floor(r), math.floor(g), math.floor(b))
 end)
 
-MachoMenuSlider(SettingTabSections[2], "G", g, 0, 255, "", 0, function(value)
+MachoMenuSlider(SettingTabSections[2], "G", g, 16, 255, "", 0, function(value)
     g = value
     MachoMenuSetAccent(MenuWindow, math.floor(r), math.floor(g), math.floor(b))
 end)
 
-MachoMenuSlider(SettingTabSections[2], "B", b, 0, 255, "", 0, function(value)
+MachoMenuSlider(SettingTabSections[2], "B", b, 32, 255, "", 0, function(value)
     b = value
     MachoMenuSetAccent(MenuWindow, math.floor(r), math.floor(g), math.floor(b))
 end)
@@ -5716,5 +5716,6 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     notify("Framework: %s", frameworkName)
 
 end)
+
 
 
