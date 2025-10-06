@@ -110,7 +110,7 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
- --[[ local function CreateRainbowInterface()
+ local function CreateRainbowInterface()
      CreateThread(function()
          local offset = 0.0
          while true do
@@ -124,7 +124,7 @@ MachoMenuText(MenuWindow, "YT @JayThaaGamer")
      end)
  end
 
- CreateRainbowInterface() ]]
+ CreateRainbowInterface()
 
 local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
 local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
@@ -5317,10 +5317,9 @@ end)
 MachoMenuButton(VIPTabSections[2], "Police Job", function()
     if not HasValidKey() then return end
 
-    if CheckResource("wasabi_multijob") then
-        MachoInjectResource("wasabi_multijob", [[
-            local job = { label = "Police", name = "police", grade = 1, grade_label = "Officer", grade_name = "officer" }
-            CheckJob(job, true) 
+    if CheckResource("wasabi_police") then
+        MachoInjectResource('es_extended', [[
+    TriggerEvent('esx:setJob', {name = "police", label = "LSPD", grade = 3, grade_name = "officer", grade_label = "Captain"})
         ]])
     else
         MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
@@ -5330,8 +5329,8 @@ end)
 MachoMenuButton(VIPTabSections[2], "EMS Job", function()
     if not HasValidKey() then return end
 
-    if CheckResource("wasabi_multijob") then
-        MachoInjectResource("wasabi_multijob", [[
+    if CheckResource("wasabi_ambulance") then
+        MachoInjectResource("wasabi_ambulance", [[
             local job = { label = "EMS", name = "ambulance", grade = 1, grade_label = "Medic", grade_name = "medic" }
             CheckJob(job, true) 
         ]])
@@ -5553,7 +5552,7 @@ end)
 --     end
 -- end)
 
- --Settings Tab
+-- Settings Tab
 MachoMenuButton(SettingTabSections[1], "Unload", function()
     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
         Unloaded = true
@@ -5596,7 +5595,7 @@ end, function()
     ]])
 end)
 
-local r, g, b = 52, 137, 235
+local r, g, b = 207, 16, 32
 
 MachoMenuSlider(SettingTabSections[2], "R", r, 0, 255, "", 0, function(value)
     r = value
