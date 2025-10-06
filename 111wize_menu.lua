@@ -110,18 +110,18 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
- -- local function CreatenbowInterface()
- --    CreateThread(function()
- --        local offset = 0.0
- --        while true do
- --            offset = offset + 0.065
- --            local r = math.floor(127 + 127 * math.sin(offset))
- --            local g = math.floor(127 + 127 * math.sin(offset + 2))
- --            local b = math.floor(127 + 127 * math.sin(offset + 4))
- --            MachoMenuSetAccent(MenuWindow, r, g, b)
- --            Wait(25)
- --        end
- --    end)
+ -- local function CreateRainbowInterface()
+--     CreateThread(function()
+--         local offset = 0.0
+--         while true do
+--             offset = offset + 0.065
+--             local r = math.floor(127 + 127 * math.sin(offset))
+--             local g = math.floor(127 + 127 * math.sin(offset + 2))
+--             local b = math.floor(127 + 127 * math.sin(offset + 4))
+--             MachoMenuSetAccent(MenuWindow, r, g, b)
+--             Wait(25)
+--         end
+--     end)
 -- end
 
 -- CreateRainbowInterface()
@@ -134,7 +134,7 @@ local VehicleTab = MachoMenuAddTab(MenuWindow, "Vehicle")
 local EmoteTab = MachoMenuAddTab(MenuWindow, "Animations")
 local EventTab = MachoMenuAddTab(MenuWindow, "Triggers")
 local SettingTab = MachoMenuAddTab(MenuWindow, "Settings")
-local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
+--local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
 
 -- Tab Content
 local function PlayerTabContent(tab)
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
