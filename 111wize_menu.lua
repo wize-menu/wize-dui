@@ -124,7 +124,7 @@ MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 --     end)
 -- end
 
--- CreateRainbowInterface()
+ CreateRainbowInterface()
 
 local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
 local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
