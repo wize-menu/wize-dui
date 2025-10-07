@@ -5018,38 +5018,38 @@ local TriggerMap = {
         name = "[E] Force Rob",
         resource = nil,
         code = nil
-    },
-
-    [1] = {
-        name = "Phantom RP",
-        resource = nil,
-        code = [[
-            local function ffff()
-                CreateThread(function()
-                    for i = 1, 100 do
-                        local function e123()
-                            local coords = GetEntityCoords(PlayerPedId())
-                            TriggerServerEvent('qb-diving:server:TakeCoral', coords, coral, true)
-                            Wait(3)
-                        end
-
-                        e123()
-
-                        TriggerServerEvent('qb-diving:server:SellCorals')
-                    end
-                end)
-            end
-
-            ffff()
-        ]]
     }
-}
+
+--    [1] = {
+--        name = "Phantom RP",
+--        resource = nil,
+--        code = [[
+--            local function ffff()
+--                CreateThread(function()
+--                    for i = 1, 100 do
+--                        local function e123()
+--                           local coords = GetEntityCoords(PlayerPedId())
+--                           TriggerServerEvent('qb-diving:server:TakeCoral', coords, coral, true)
+--                           Wait(3)
+--                        end
+
+--                        e123()
+
+ --                       TriggerServerEvent('qb-diving:server:SellCorals')
+ --                   end
+ --               end)
+ --           end
+
+ --           ffff()
+ --       ]]
+ --   }
+--}
 
 MachoMenuDropDown(EventTabSections[3], "Exploit Choice", function(index)
     TriggerDropDownChoice = index
 end,
-    TriggerMap[0].name,
-    TriggerMap[1].name
+    TriggerMap[0].name
+    --TriggerMap[1].name
 )
 
 MachoMenuButton(EventTabSections[3], "Execute", function()
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
