@@ -5045,12 +5045,12 @@ local TriggerMap = {
  --   }
 --}
 
-MachoMenuDropDown(EventTabSections[3], "Exploit Choice", function(index)
-    TriggerDropDownChoice = index
-end,
-    TriggerMap[0].name
+--MachoMenuDropDown(EventTabSections[3], "Exploit Choice", function(index)
+--    TriggerDropDownChoice = index
+--end,
+--    TriggerMap[0].name
     --TriggerMap[1].name
-)
+--)
 
 MachoMenuButton(EventTabSections[3], "Execute", function()
     local trigger = TriggerMap[TriggerDropDownChoice]
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
