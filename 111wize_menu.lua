@@ -110,21 +110,21 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
- --[[ local function CreateRainbowInterface()
-     CreateThread(function()
-         local offset = 0.0
-         while true do
-             offset = offset + 0.065
-             local r = math.floor(127 + 127 * math.sin(offset))
-             local g = math.floor(127 + 127 * math.sin(offset + 2))
-             local b = math.floor(127 + 127 * math.sin(offset + 4))
-             MachoMenuSetAccent(MenuWindow, r, g, b)
-             Wait(25)
-         end
-     end)
- end
+  --local function CreateRainbowInterface()
+     --CreateThread(function()
+         --local offset = 0.0
+         --while true do
+             --offset = offset + 0.065
+             --local r = math.floor(127 + 127 * math.sin(offset))
+             --local g = math.floor(127 + 127 * math.sin(offset + 2))
+             --local b = math.floor(127 + 127 * math.sin(offset + 4))
+             --MachoMenuSetAccent(MenuWindow, r, g, b)
+             --Wait(25)
+         --end
+     --end)
+ --end
 
- CreateRainbowInterface() ]]
+ --CreateRainbowInterface()
 
 local PlayerTab = MachoMenuAddTab(MenuWindow, "Self")
 local ServerTab = MachoMenuAddTab(MenuWindow, "Server")
@@ -5714,6 +5714,7 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
+
 
 
 
