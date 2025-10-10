@@ -1,4 +1,4 @@
-local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/main/wizekeys.json"
+local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
 
@@ -5321,7 +5321,7 @@ end)
 MachoMenuButton(VIPTabSections[2], "Police Job", function()
     if not HasValidKey() then return end
 
-    if CheckResource("wasabi_police") then
+    if CheckResource("es_extended") then
         MachoInjectResource('es_extended', [[
     TriggerEvent('esx:setJob', {name = "police", label = "LSPD", grade = 3, grade_name = "officer", grade_label = "Captain"})
         ]])
@@ -5718,4 +5718,3 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
-
