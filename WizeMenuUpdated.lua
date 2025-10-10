@@ -1,4 +1,4 @@
-local keyListUrl = "https://rawcdn.githack.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
+local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
 
@@ -5429,3 +5429,4 @@ System: 255)
     ]])
 
 end)
+
