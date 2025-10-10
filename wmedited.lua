@@ -134,7 +134,7 @@ local VehicleTab = MachoMenuAddTab(MenuWindow, "Vehicle")
 local EmoteTab = MachoMenuAddTab(MenuWindow, "Animations")
 local EventTab = MachoMenuAddTab(MenuWindow, "Triggers")
 local SettingTab = MachoMenuAddTab(MenuWindow, "Settings")
-local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
+--local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
 
 -- Tab Content
 local function PlayerTabContent(tab)
@@ -235,7 +235,7 @@ local function EventTabContent(tab)
     return SectionOne, SectionTwo, SectionThree, SectionFour
 end
 
-local function VIPTabContent(tab)
+--[[ local function VIPTabContent(tab)
     local leftX = TabsBarWidth + SectionsPadding
     local topY = SectionsPadding + MachoPanelGap
     local midY = topY + HalfHeight + SectionsPadding
@@ -261,7 +261,7 @@ local function SettingTabContent(tab)
     local SectionThree = MachoMenuGroup(tab, "Server Settings", rightX, SectionsPadding + MachoPanelGap, rightX + ColumnWidth, SectionChildHeight)
 
     return SectionOne, SectionTwo, SectionThree
-end
+end ]]--
 
 -- Tab Sections
 local PlayerTabSections = { PlayerTabContent(PlayerTab) }
@@ -271,7 +271,7 @@ local WeaponTabSections = { WeaponTabContent(WeaponTab) }
 local VehicleTabSections = { VehicleTabContent(VehicleTab) }
 local EmoteTabSections = { EmoteTabContent(EmoteTab) }
 local EventTabSections = { EventTabContent(EventTab) }
-local VIPTabSections = { VIPTabContent(VIPTab) }
+---local VIPTabSections = { VIPTabContent(VIPTab) }
 local SettingTabSections = { SettingTabContent(SettingTab) }
 
 -- Functions
@@ -5149,7 +5149,7 @@ MachoMenuButton(EventTabSections[3], "Execute", function()
 end)
 
 -- VIP Tab
-ItemNameHandle = MachoMenuInputbox(VIPTabSections[1], "Name:", "...")
+--[[ ItemNameHandle = MachoMenuInputbox(VIPTabSections[1], "Name:", "...")
 ItemAmountHandle = MachoMenuInputbox(VIPTabSections[1], "Amount:", "...")
 
 MachoMenuButton(VIPTabSections[1], "Spawn", function()
@@ -5164,12 +5164,12 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
             ["qb-uwujob"] = function() 
                 MachoInjectResource2(3, CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
                     local function aswdaw4atsdf()
-                        TriggerServerEvent("qb-uwujob:addItem", "]] .. ItemName .. [[", ]] .. ItemAmount .. [[)
-                    end
+                        --TriggerServerEvent("qb-uwujob:addItem", "]] --.. ItemName .. [[", ]] .. ItemAmount .. [[)
+                    --end
 
-                    aswdaw4atsdf()
-                ]])
-            end,
+                    --aswdaw4atsdf()
+                --]])
+           -- end, ]]--
             
             -- ["coinShop"] = function()
             --     MachoInjectResource("coinShop", [[
@@ -5314,13 +5314,13 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
     end
 end)
 
-MachoMenuButton(VIPTabSections[2], "Police Job", function()
+--[[ MachoMenuButton(VIPTabSections[2], "Police Job", function()
     if not HasValidKey() then return end
 
     if CheckResource("wasabi_police") then
         MachoInjectResource('es_extended', [[
     TriggerEvent('esx:setJob', {name = "police", label = "LSPD", grade = 3, grade_name = "officer", grade_label = "Captain"})
-        ]])
+        --)
     else
         MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
     end
@@ -5333,12 +5333,12 @@ MachoMenuButton(VIPTabSections[2], "EMS Job", function()
         MachoInjectResource("wasabi_ambulance", [[
             local job = { label = "EMS", name = "ambulance", grade = 1, grade_label = "Medic", grade_name = "medic" }
             CheckJob(job, true) 
-        ]])
+        --)
     else
         MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
     end
 end)
-
+ ]]--
 --MachoMenuButton(VIPTabSections[3], "Staff (1) (BETA) - Menu", function()
     --if not HasValidStaffKey() then return end
 
@@ -5555,7 +5555,7 @@ end)
 -- Settings Tab
 MachoMenuButton(SettingTabSections[1], "Stop", function()
     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
-        Unloaded = true
+        Stopped = true
     ]])
 
     MachoInjectResource((CheckResource("core") and "core") or (CheckResource("es_extended") and "es_extended") or (CheckResource("qb-core") and "qb-core") or (CheckResource("monitor") and "monitor") or "any", [[
@@ -5782,5 +5782,6 @@ System: 255)
         end
     ]])
 end)
+
 
 
