@@ -1,4 +1,4 @@
-local keyListUrl = "https://raw.githack.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
+local keyListUrl = "https://raw.githubusercontent.com/wize-menu/wize-dui/refs/heads/main/wizekeys.json"
 local KeysBin = MachoWebRequest(keyListUrl)
 local CurrentKey = MachoAuthenticationKey()
 
@@ -110,7 +110,7 @@ MachoMenuSetAccent(MenuWindow, 207, 16, 32)
 
 MachoMenuText(MenuWindow, "YT @JayThaaGamer")
 
---[[ local function CreateRainbowInterface()
+ --[[ local function CreateRainbowInterface()
      CreateThread(function()
          local offset = 0.0
          while true do
@@ -134,7 +134,7 @@ local VehicleTab = MachoMenuAddTab(MenuWindow, "Vehicle")
 local EmoteTab = MachoMenuAddTab(MenuWindow, "Animations")
 local EventTab = MachoMenuAddTab(MenuWindow, "Triggers")
 local SettingTab = MachoMenuAddTab(MenuWindow, "Settings")
---local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
+local VIPTab = MachoMenuAddTab(MenuWindow, "VIP")
 
 -- Tab Content
 local function PlayerTabContent(tab)
@@ -235,7 +235,7 @@ local function EventTabContent(tab)
     return SectionOne, SectionTwo, SectionThree, SectionFour
 end
 
---[[ local function VIPTabContent(tab)
+local function VIPTabContent(tab)
     local leftX = TabsBarWidth + SectionsPadding
     local topY = SectionsPadding + MachoPanelGap
     local midY = topY + HalfHeight + SectionsPadding
@@ -247,7 +247,7 @@ end
     local SectionThree = MachoMenuGroup(tab, "Common Exploits V2", rightX, SectionsPadding + MachoPanelGap, rightX + ColumnWidth, SectionChildHeight)
 
     return SectionOne, SectionTwo, SectionThree
-end ]]
+end
 
 local function SettingTabContent(tab)
     local leftX = TabsBarWidth + SectionsPadding
@@ -271,7 +271,7 @@ local WeaponTabSections = { WeaponTabContent(WeaponTab) }
 local VehicleTabSections = { VehicleTabContent(VehicleTab) }
 local EmoteTabSections = { EmoteTabContent(EmoteTab) }
 local EventTabSections = { EventTabContent(EventTab) }
---local VIPTabSections = { VIPTabContent(VIPTab) }
+local VIPTabSections = { VIPTabContent(VIPTab) }
 local SettingTabSections = { SettingTabContent(SettingTab) }
 
 -- Functions
@@ -5148,6 +5148,410 @@ MachoMenuButton(EventTabSections[3], "Execute", function()
     end
 end)
 
+-- VIP Tab
+ItemNameHandle = MachoMenuInputbox(VIPTabSections[1], "Name:", "...")
+ItemAmountHandle = MachoMenuInputbox(VIPTabSections[1], "Amount:", "...")
+
+MachoMenuButton(VIPTabSections[1], "Spawn", function()
+    if not HasValidKey() then return end
+
+    local ItemName = MachoMenuGetInputbox(ItemNameHandle)
+    local ItemAmount = MachoMenuGetInputbox(ItemAmountHandle)
+
+    if ItemName and ItemName ~= "" and ItemAmount and tonumber(ItemAmount) then
+        local Amount = tonumber(ItemAmount)
+        local resourceActions = {
+            ["qb-uwujob"] = function() 
+                MachoInjectResource2(3, CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
+                    local function aswdaw4atsdf()
+                        TriggerServerEvent("qb-uwujob:addItem", "]] .. ItemName .. [[", ]] .. ItemAmount .. [[)
+                    end
+
+                    aswdaw4atsdf()
+                ]])
+            end,
+            
+            -- ["coinShop"] = function()
+            --     MachoInjectResource("coinShop", [[
+            --         local function wafawhjaw5r7f()
+            --             if "]] .. ItemName .. [[" == "money" or "]] .. ItemName .. [[" == "bank" or "]] .. ItemName .. [[" == "black_money" then
+            --                 local itemData = {
+            --                     account = "]] .. ItemName .. [[",
+            --                     money = ]] .. ItemAmount .. [[
+            --                 }
+            --             else
+            --                 local itemData = {
+            --                     item = "]] .. ItemName .. [[",
+            --                     count = ]] .. ItemAmount .. [[
+            --                 }
+            --             end
+
+            --             lib.callback.await("bs:cs:giveItem", false, itemData)
+            --         end
+
+            --         wafawhjaw5r7f()
+            --     ]])
+            -- end,
+
+            ["skirpz_drugplug"] = function()
+                MachoInjectResource2(3, (CheckResource("ReaperV4") and "ReaperV4") or (CheckResource("monitor") and "monitor") or "any", [[
+                    local function fawfafffsfzxfzx()
+                        XTYZ = CreateThread
+                        XTYZ(function()
+                            for i = 1, ]] .. ItemAmount .. [[ do
+                                local jtgdealer = "jtglol" .. math.random(1000,9999)
+                                JTG_TriggerServerEvent = TriggerServerEvent
+                                JTG_TriggerServerEvent('shop:purchaseItem', jtgdealer, ']] .. ItemName .. [[', 0)
+                                Wait(100)
+                            end
+                        end)
+                    end
+
+
+                    fawfafffsfzxfzx()
+                ]])
+            end,
+
+            ["ak47_whitewidowv2"] = function()
+                MachoInjectResource2(3, (CheckResource("ReaperV4") and "ReaperV4") or (CheckResource("monitor") and "monitor") or "any", [[
+                    local function aXj49WqTpL()
+                        local keyName = "ak47_whitewidowv2:process"
+                        TriggerServerEvent(keyName, "]] .. ItemName .. [[", {money = 0}, ]] .. ItemAmount .. [[, 0)
+                    end
+                    aXj49WqTpL()
+                ]])
+            end,
+
+            ["ak47_business"] = function()
+                MachoInjectResource2(3, (CheckResource("ReaperV4") and "ReaperV4") or (CheckResource("monitor") and "monitor") or "any", [[
+                    local function agjw37257gj()
+                        local keyName = "ak47_business:processed"
+                        TriggerServerEvent(keyName, "]] .. ItemName .. [[", ]] .. ItemAmount .. [[)
+                    end
+
+                    agjw37257gj()
+                ]])
+            end,
+
+            ["ars_hunting"] = function()
+                MachoInjectResource2(3, (CheckResource("ReaperV4") and "ReaperV4") or (CheckResource("monitor") and "monitor") or "any", [[
+                    local function ZqMwLpTrYv()
+                        local keyName = "ars_hunting:sellBuyItem"
+                        TriggerServerEvent(keyName, { buy = true, item = "]] .. ItemName .. [[", price = 0, quantity = ]] .. ItemAmount .. [[ })
+                    end
+
+                    ZqMwLpTrYv()
+                ]])
+            end,
+
+            ["fivecode_camping"] = function()
+                MachoInjectResource2(3, (CheckResource("monitor") and "monitor") or "any", [[
+                    local function GnRtCvXpKa()
+                        local keyName = 'fivecode_camping:callCallback'
+                        local KeyNameParams = 'fivecode_camping:shopPay'
+                        TriggerServerEvent(keyName, KeyNameParams, 0, {
+                            ['price'] = 0,
+                            ['item'] = "]] .. ItemName .. [[",
+                            ['amount'] = ]] .. ItemAmount .. [[,
+                            ['label'] = 'JTG'
+                        }, {
+                            ['args'] = {
+                                ['payment'] = {
+                                    ['bank'] = true,
+                                    ['cash'] = true
+                                }
+                            },
+                            ['entity'] = 9218,
+                            ['distance'] = 0.64534759521484,
+                            ['hide'] = false,
+                            ['type'] = 'bank',
+                            ['label'] = 'Open Shop',
+                            ['coords'] = 'vector3(-773.2181, 5597.66, 33.97217)',
+                            ['name'] = 'npcShop-vec4(-773.409973, 5597.819824, 33.590000, 172.910004)'
+                        })
+                    end
+
+                    GnRtCvXpKa()
+                ]])
+            end,
+
+            ["spoodyGunPlug"] = function()
+                MachoInjectResource2(3, (CheckResource("spoodyGunPlug") and "spoodyGunPlug") or "any", [[
+                    local function GnRtCvXpKa()
+                        common:giveItem({ { item = "]] .. ItemName .. [[", amount = ]] .. ItemAmount .. [[ } })  
+                    end
+
+                    GnRtCvXpKa()
+                ]])
+            end,
+
+            ["solos-weedtable"] = function()
+                MachoInjectResource2(3, (CheckResource("ReaperV4") and "ReaperV4") or (CheckResource("monitor") and "monitor") or "any", [[
+                    local function aqrqtsgw32w523w()
+                        local keyName = "solos-weed:server:itemadd"
+                        TriggerServerEvent(keyName, "]] .. ItemName .. [[", ]] .. ItemAmount .. [[)
+                    end
+
+                    aqrqtsgw32w523w()
+                ]])
+            end
+        }
+
+        local ResourceFound = false
+        for ResourceName, action in pairs(resourceActions) do
+            if GetResourceState(ResourceName) == "started" then
+                action()
+                ResourceFound = true
+                -- break
+            end
+        end 
+
+        if not ResourceFound then
+            MachoMenuNotification("[NOTIFICATION] JTG Menu", "No Triggers Found.")
+        end
+    else
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Invalid Item or Amount.")
+    end
+end)
+
+MachoMenuButton(VIPTabSections[2], "Police Job", function()
+    if not HasValidKey() then return end
+
+    if CheckResource("wasabi_police") then
+        MachoInjectResource('es_extended', [[
+    TriggerEvent('esx:setJob', {name = "police", label = "LSPD", grade = 3, grade_name = "officer", grade_label = "Captain"})
+        ]])
+    else
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
+    end
+end)
+
+MachoMenuButton(VIPTabSections[2], "EMS Job", function()
+    if not HasValidKey() then return end
+
+    if CheckResource("wasabi_ambulance") then
+        MachoInjectResource("wasabi_ambulance", [[
+            local job = { label = "EMS", name = "ambulance", grade = 1, grade_label = "Medic", grade_name = "medic" }
+            CheckJob(job, true) 
+        ]])
+    else
+        MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
+    end
+end)
+
+--MachoMenuButton(VIPTabSections[3], "Staff (1) (BETA) - Menu", function()
+    --if not HasValidStaffKey() then return end
+
+   -- if CheckResource("mc9-adminmenu") then
+      --  MachoInjectResource2(2, 'mc9-adminmenu', [[
+    --        _G.lib = _G.lib or lib
+     --       _G.QBCore = _G.QBCore or exports['qb-core']:GetCoreObject()
+
+     --       _G.lib.callback.register("mc9-adminmenu:callback:GetAllowedActions", function()
+      --          local all = {}
+      --          for k, v in pairs(_G.Config.Actions) do
+       --             all[k] = true
+        --        end
+         --       return all
+         --   end)
+
+         --   _G.CheckPerms = function(_)
+          --      return true
+          --  end
+
+          --  _G.setupMenu = function()
+            --    _G.PlayerData = _G.QBCore.Functions.GetPlayerData()
+            --    _G.QBCore.Shared.Vehicles = _G.lib.callback.await("mc9-adminmenu:callback:GetSharedVehicles", false)
+            --    _G.resources = _G.lib.callback.await("mc9-adminmenu:callback:GetResources", false)
+            --    _G.commands = _G.lib.callback.await("mc9-adminmenu:callback:GetCommands", false)
+            --    _G.GetData()
+
+            --    _G.actions = {}
+             --   for k, v in pairs(_G.Config.Actions) do
+             --       _G.actions[k] = v
+             --   end
+
+             --   _G.playerActions = {}
+             --   for k, v in pairs(_G.Config.PlayerActions or {}) do
+             --       _G.playerActions[k] = v
+             --   end
+
+             --   _G.otherActions = {}
+             --   for k, v in pairs(_G.Config.OtherActions or {}) do
+             --       _G.otherActions[k] = v
+             --   end
+
+             --   _G.SendNUIMessage({
+              --      action = "setupUI",
+              --      data = {
+              --          actions = _G.actions,
+              --          playerActions = _G.playerActions,
+              --          otherActions = _G.otherActions,
+              --          resources = _G.resources,
+              --          playerData = _G.PlayerData,
+              --          commands = _G.commands,
+              --          weapons = _G.QBCore.Shared.Weapons,
+              --      }
+              --  })
+
+               -- _G.uiReady = true
+           -- end
+
+           -- _G.setupMenu()
+           -- _G.ToggleUI(true)
+        --]])
+    --else
+    --    MachoMenuNotification("[NOTIFICATION] JTG Menu", "Resource Not Found.")
+    --end
+--end)
+
+--MachoMenuButton(VIPTabSections[3], "Staff (2) (BETA) - Announce", function()
+    --if not HasValidStaffKey() then return end
+
+   -- if CheckResource("ps-dispatch") then
+      --  MachoInjectResource2(2, 'ps-dispatch', [[
+        --    local AllJobs = {
+          --      'police','sheriff','state','ranger','ambulance','ems','doc','doj',
+            --    'mechanic','bennys','lsc','tow','taxi','bus','trucker','garbage',
+              --  'news','realestate','cardealer','gruppe6','casino','government','judge','lawyer',
+                --'unemployed'
+            --}
+
+            --local data = {
+              --  message = 'Hey, I’m JTG — one of the best devs in the FiveM scene. Hit me up: YT JayThaaGamer - P.S. JTG',
+                --codeName = 'j5_blast',
+                --code = '',
+                --icon = 'fas fa-bullhorn',
+                --priority = 1,
+                --coords = vector3(0.0, 0.0, 0.0),
+                ---alertTime = 9999,
+                ---jobs = AllJobs,
+                ---alert = { radius=200, sprite=84, color=1, scale=2.0, length=15, flash=true }
+            --}
+
+            --local function WoodyBETA()
+              --  _G.Twiga = TriggerServerEvent
+                --_G.Twiga('ps-dispatch:server:notify', data)
+            --end
+
+            --WoodyBETA()
+        --]])
+    --else
+    --    MachoMenuNotification("[NOTIFICATION] Wize Menu", "Resource Not Found.")
+  --  end
+--end)
+
+-- MachoMenuCheckbox(VIPTabSections[3], "RPG Kill Everyone", function()
+--     if not HasValidKey() then return end
+    
+--     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
+--         if tUOgshhvIaku == nil then tUOgshhvIaku = false end
+--         tUOgshhvIaku = true
+
+--         local function bZxLmNcVqPeTyUi()
+--             local vBnMkLoPi = PlayerPedId()
+--             local wQaSzXedC = GetHashKey("WEAPON_PASSENGER_ROCKET")
+--             local eDxCfVgBh = 100
+--             local lKjHgFdSa = 1000.0
+--             local mAxPlErOy = 300.0
+
+--             local rTwEcVzUi = CreateThread
+--             local oPiLyKuJm = ShootSingleBulletBetweenCoords
+
+--             rTwEcVzUi(function()
+--                 while tUOgshhvIaku and not Unloaded do
+--                     Wait(eDxCfVgBh)
+--                     local aSdFgHjKl = GetActivePlayers()
+--                     local xSwEdCvFr = GetEntityCoords(vBnMkLoPi)
+
+--                     for _, bGtFrEdCv in ipairs(aSdFgHjKl) do
+--                         local nMzXcVbNm = GetPlayerPed(bGtFrEdCv)
+--                         if nMzXcVbNm ~= vBnMkLoPi and DoesEntityExist(nMzXcVbNm) and not IsPedDeadOrDying(nMzXcVbNm, true) then
+--                             local zAsXcVbNm = GetEntityCoords(nMzXcVbNm)
+--                             if #(zAsXcVbNm - xSwEdCvFr) <= mAxPlErOy then
+--                                 local jUiKoLpMq = vector3(
+--                                     zAsXcVbNm.x + (math.random() - 0.5) * 0.8,
+--                                     zAsXcVbNm.y + (math.random() - 0.5) * 0.8,
+--                                     zAsXcVbNm.z + 1.2
+--                                 )
+
+--                                 local cReAtEtHrEaD = vector3(
+--                                     zAsXcVbNm.x,
+--                                     zAsXcVbNm.y,
+--                                     zAsXcVbNm.z + 0.2
+--                                 )
+
+--                                 oPiLyKuJm(
+--                                     jUiKoLpMq.x, jUiKoLpMq.y, jUiKoLpMq.z,
+--                                     cReAtEtHrEaD.x, cReAtEtHrEaD.y, cReAtEtHrEaD.z,
+--                                     lKjHgFdSa,
+--                                     true,
+--                                     wQaSzXedC,
+--                                     vBnMkLoPi,
+--                                     true,
+--                                     false,
+--                                     100.0
+--                                 )
+--                             end
+--                         end
+--                     end
+--                 end
+--             end)
+--         end
+
+--         bZxLmNcVqPeTyUi()
+--     ]])
+-- end, function()
+--     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
+--         tUOgshhvIaku = false
+--     ]])
+-- end)
+
+-- MachoMenuButton(VIPTabSections[3], "Spoofed Weapon Bypass", function()
+--     if not HasValidKey() then return end
+
+--     local payload = [[
+--         _G.GetCurrentPedWeapon = function() return -1569615261 end
+--         _G.IsPedSwappingWeapon = function() return false end
+--         _G.GetSelectedPedWeapon = function() return -1569615261 end
+--         _G.GetWeapontypeGroup = function() return -1569615261 end
+--         _G.IsPedArmed = function() return false end
+--         _G.HasPedGotWeapon = function() return false end
+--         _G.IsPedShooting = function() return false end
+--         _G.WasPedShooting = function() return false end
+--         _G.RemoveAllPedWeapons = function() return false end
+--         _G.RemoveWeaponFromPed = function() return false end
+--         _G.IsPedDoingDriveby = function() return false end
+--         _G.IsPedSwitchingWeapon = function() return false end
+--         _G.GetBestPedWeapon = function() return -1569615261 end
+--         _G.GetAmmoInPedWeapon = function() return 0 end
+--         _G.GetPedAmmoTypeFromWeapon = function() return 0 end
+--         _G.GetCurrentPedWeaponEntityIndex = function() return -1 end
+--         _G.GetPedAmmoTypeFromWeapon_2 = function() return 0 end
+--         _G.GetWeapontypeModel = function() return -1569615261 end
+--         _G.GetEntityType = function() return 0 end
+--         _G.GetEntityAttachedTo = function() return false end
+--         _G.GetWeaponNameFromHash = function() return -1569615261 end
+--         _G.IsPedReloading = function() return false end
+--     ]]
+
+--     local function awfawrwr3wsd()
+--             local afwjawauw5sd = CreateThread
+--             afwjawauw5sd(function()
+--             for i = 0, GetNumResources() - 1 do
+--                 local resourcename = GetResourceByFindIndex(i)
+--                 if resourcename and GetResourceState(resourcename) == "started" then
+--                     MachoInjectResource(resourcename, string.format([[
+--                         print("[ GAMERWARE ] - Resource Name: %s")
+--                         %s
+--                     ]], resourcename, payload))
+--                     Wait(200)
+--                 end
+--             end
+--         end)
+--     end
+-- end)
+
 -- Settings Tab
 MachoMenuButton(SettingTabSections[1], "Unload", function()
     MachoInjectResource(CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
@@ -5310,123 +5714,3 @@ MachoMenuButton(SettingTabSections[3], "Framework Checker", function()
     local frameworkName = DetectFramework()
     notify("Framework: %s", frameworkName)
 end)
-
-MachoMenuButton(SettingTabSections[4], "Enable Spectator Names", function()
-    MachoInjectResource("any", [[
-        local INVISIBLE_DELAY_MS = 2000
-        local MAX_DISTANCE_TO_CHECK = 130.0
-        local invisiblePlayerTimer = {}
-        
-        function DrawTextOnScreen(text, x, y)
-            SetTextFont(0)
-            SetTextScale(0.5, 0.5)
-            SetTextColour(255, 255, 255, 255)
-            SetTextDropshadow(0, 0, 0, 0, 255)
-            SetTextEdge(1, 0, 0, 0, 255)
-            SetTextDropShadow()
-            SetTextOutline()
-            SetTextEntry("STRING")
-            AddTextComponentString(text)
-            DrawText(x, y)
-        end
-        
-        Citizen.CreateThread(function()
-            while true do
-                Citizen.Wait(0)
-                DrawTextOnScreen("~r~Spectators", 0.6, 0.1)
-                local spectatorTextWidth = 0.5
-                local spectatorTextHeight = 0.1
-                local startX = 0.6
-                local startY = 0.1 + 0.02
-                local players = GetActivePlayers()
-                for i = 1, #players do
-                    local player = players[i]
-                    local playerPed = GetPlayerPed(player)
-                    local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(playerPed), true)
-                    if distance <= ]] .. MAX_DISTANCE_TO_CHECK .. [[ and not IsEntityVisible(playerPed) then
-                        if not invisiblePlayerTimer[player] then
-                            invisiblePlayerTimer[player] = GetGameTimer()
-                        elseif (GetGameTimer() - invisiblePlayerTimer[player]) >= ]] .. INVISIBLE_DELAY_MS .. [[ then
-                            local playerName = GetPlayerName(player)
-                            DrawTextOnScreen(playerName, startX, startY)
-                            startY = startY + 0.02
-                        end
-                    else
-                        invisiblePlayerTimer[player] = nil
-                    end
-                end
-            end
-        end)
-        notify("Displaying Spectators")
-    ]])
-end)
-
-MachoMenuButton(SettingTabSections[5], "Enable Player IDs", function()
-    MachoInjectResource("any", [[
-        local disPlayerNames = 5
-        playerDistances = {}
-        
-        Citizen.CreateThread(function()
-            while true do
-                for id = 0, 64 do 
-                    if NetworkIsPlayerActive(id) then
-                        if GetPlayerPed(id) ~= GetPlayerPed(-1) then
-                            if (playerDistances[id] < disPlayerNames) then
-                                x2, y2, z2 = table.unpack(GetEntityCoords(GetPlayerPed(id), true))
-                                if NetworkIsPlayerTalking(id) then
-                                    DrawText3D(x2, y2, z2+1, GetPlayerServerId(id), 247,124,24)
-                                else
-                                    DrawText3D(x2, y2, z2+1, GetPlayerServerId(id), 255,255,255)
-                                end
-                            end  
-                        end
-                    end
-                end
-                Citizen.Wait(0)
-            end
-        end)
-        
-        Citizen.CreateThread(function()
-            while true do
-                for id = 0, 64 do
-                    if GetPlayerPed(id) ~= GetPlayerPed(-1) then
-                        x1, y1, z1 = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
-                        x2, y2, z2 = table.unpack(GetEntityCoords(GetPlayerPed(id), true))
-                        distance = math.floor(GetDistanceBetweenCoords(x1, y1, z1, x2, y2, z2, true))
-                        playerDistances[id] = distance
-                    end
-                end
-                Citizen.Wait(1000)
-            end
-        end)
-        
-        function DrawText3D(x, y, z, text, r, g, b) 
-            local onScreen, _x, _y = World3dToScreen2d(x, y, z)
-            local px, py, pz = table.unpack(GetGameplayCamCoords())
-            local dist = GetDistanceBetweenCoords(px, py, pz, x, y, z, 1)
-            
-            local scale = (1/dist)*2
-            local fov = (1/GetGameplayCamFov())*100
-            local scale = scale*fov
-            
-            if onScreen then
-                SetTextScale(0.0*scale, 0.55*scale)
-                SetTextFont(0)
-                SetTextProportional(1)
-                SetTextColour(r, g, b, 255વ
-
-System: 255)
-                SetTextDropshadow(0, 0, 0, 0, 255)
-                SetTextEdge(2, 0, 0, 0, 150)
-                SetTextDropShadow()
-                SetTextOutline()
-                SetTextEntry("STRING")
-                SetTextCentre(1)
-                AddTextComponentString(text)
-                DrawText(_x, _y)
-            end
-        end
-    ]])
-
-end)
-
