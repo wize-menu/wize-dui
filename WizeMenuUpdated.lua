@@ -5164,7 +5164,7 @@ MachoMenuButton(VIPTabSections[1], "Spawn", function()
             ["qb-uwujob"] = function() 
                 MachoInjectResource2(3, CheckResource("monitor") and "monitor" or CheckResource("oxmysql") and "oxmysql" or "any", [[
                     local function aswdaw4atsdf()
-                        TriggerServerEvent("qb-uwujob:addItem", "]] .. --ItemName .. --[[", ]] .. ItemAmount .. [[)
+                        TriggerServerEvent("qb-uwujob:addItem", "]] --.. --ItemName .. --[[", ]] .. ItemAmount .. [[)
                     --end
 
                     --aswdaw4atsdf()
